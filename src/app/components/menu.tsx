@@ -23,7 +23,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
-
+import MyProfile from "./profile"
 const drawerWidth = 240;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
@@ -95,6 +95,8 @@ export default function PersistentDrawerLeft({children}:DrawerLeftProps) {
       <CssBaseline />
       <AppBar position="fixed" style={{background:"#000a29"}} open={open}>
         <Toolbar>
+
+          <MyProfile/>
       
           <IconButton
             color="inherit"
@@ -147,12 +149,12 @@ export default function PersistentDrawerLeft({children}:DrawerLeftProps) {
             <ListItemText style={{color:"gray" }} primary={"Usuario"} />
           </ListItem>
           
-          <ListItem  component={Link} href="/pages/role">
+        { /* <ListItem  component={Link} href="/pages/users/userRoles">
             <ListItemIcon >
               <AssignmentIndIcon />
             </ListItemIcon>
             <ListItemText style={{color:"gray"}} primary={"Roles de usuario"} />
-          </ListItem>
+          </ListItem>*/}
 
           <ListItem  component={Link} href="/pages/clients">
             <ListItemIcon >
@@ -162,26 +164,20 @@ export default function PersistentDrawerLeft({children}:DrawerLeftProps) {
           </ListItem>
 
 
-          <ListItem  component={Link} href="/pages/report">
+          <ListItem  component={Link} href="/pages/reports">
             <ListItemIcon >
               <TextSnippetIcon />
             </ListItemIcon>
             <ListItemText style={{color:"gray"}} primary={"Reportes"} />
           </ListItem>
 
-          <ListItem component={Link} href="/" >
-            <ListItemIcon  >
-              <LogoutIcon />
-            </ListItemIcon>
-            <ListItemText style={{ color:"gray" }}primary={"Logout"} />
-          </ListItem>
-
+      
 
         </List>
         <Divider />
        
       </Drawer>
-      <Main open={open}>
+      <Main open={open} sx={{pb:10}}>
         <DrawerHeader />
 
        {children}

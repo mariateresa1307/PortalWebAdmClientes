@@ -1,14 +1,14 @@
 "use client";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { ThemeUIProvider } from "theme-ui";
 import {
   ThemeProvider,
   createTheme as materialCreateTheme,
   THEME_ID,
 } from "@mui/material/styles";
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { enUS } from 'date-fns/locale';
 
-const inter = Inter({ subsets: ["latin"] });
+
 
 const materialTheme = materialCreateTheme({
   palette: {
@@ -16,16 +16,20 @@ const materialTheme = materialCreateTheme({
   },
 });
 
-export default function RootLayout({
-  children,
-}: Readonly<{
+export default function RootLayout({ children }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
     <ThemeProvider theme={{ [THEME_ID]: materialTheme }}>
-      <html lang="en">
-        <body>{children}</body>
+      <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ enUS }>
+
+      <html lang="en" >
+        <body>
+          {children}
+          
+          </body>
       </html>
+      </LocalizationProvider>
     </ThemeProvider>
   );
 }

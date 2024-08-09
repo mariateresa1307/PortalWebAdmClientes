@@ -16,12 +16,12 @@ interface DetailsCardProps {
 
 
 const DetailsCard = ( {  icons, title, content, background } : DetailsCardProps) => (
-  <div>
-    <Card elevation={0} style={{ backgroundImage: background }}>
+  <>
+    <Card elevation={0} style={{ width:"100%" , backgroundImage: background}}>
       <CardContent className="card-content">
         <Grid container spacing={3} justifyContent="center">
-          <Grid item xs={12} sm={6} md={6} lg={6}>
-            <Typography variant="h2" style={{ color: "white", textAlign: "center" }}>
+          <Grid item xs={12} sm={12} md={12} lg={10}>
+            <Typography variant="h3" style={{ color: "white", textAlign: "center" }}>
               {icons} {content}
             </Typography>
             <Typography variant="h6" style={{ textAlign: "center", color: "#ffffff", fontWeight: "initial", fontSize: "1.1rem" }}>
@@ -29,23 +29,11 @@ const DetailsCard = ( {  icons, title, content, background } : DetailsCardProps)
             </Typography>
           </Grid>
 
-          <Grid
-            item
-            xs={12}
-            sm={6}
-            md={6}
-            lg={6}
-            style={{
-              textAlignLast: "end",
-              marginTop: "auto",
-            }}
-          >
-          
-          </Grid>
+         
         </Grid>
       </CardContent>
     </Card>
-  </div>
+  </>
 )
 
 export default DetailsCard

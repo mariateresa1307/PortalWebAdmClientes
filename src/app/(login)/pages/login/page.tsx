@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import { ChangeEvent, useState } from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -14,27 +14,66 @@ import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { axiosInstance } from "@/app/helpers/axiosConfig";
+import { AxiosRequestConfig } from "axios";
+import { useRouter } from 'next/navigation'
+import Swal from "sweetalert2";
 
-
-export default function OutlinedCard() {
-  const handleLogin = () => {
-    console.log("GOGOG");
+export default function Login() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [state, setState] = useState({ user: "", password: "" });
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const router = useRouter()
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
   };
+
+  const handleLogin = async () => {
+    try {
+      const payload = {
+        loginUsuario: state.user,
+        claveUsuario: state.password
+      }
+      const config: AxiosRequestConfig = {
+        headers: payload
+      }
+      const response = await axiosInstance.get('auth/login', config);
+      const session = response.data[0];
+      localStorage.setItem('ntu-session', JSON.stringify(session));
+      router.push('pages/home');
+
+    } catch (error) {
+    
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Usuario o clave invalido!",
+        
+      });
+    }
+
+  };
+
+
+  const handleUserInput = (e: ChangeEvent<HTMLInputElement>) => {
+    setState(ps => ({ ...ps, [e.target.name]: e.target.value }))
+  }
 
   return (
     <Box sx={{ minWidth: 275 }}>
       <Card variant="outlined">
-        <React.Fragment>
+        <>
           <CardContent>
-          
             <Image
               src={logo}
               alt=""
               style={{
                 width: "60%",
-                height:"0%",
+                height: "0%",
                 maxWidth: "100%",
                 marginLeft: "auto",
                 marginRight: "auto",
@@ -43,69 +82,70 @@ export default function OutlinedCard() {
             />
 
 
-            <form noValidate>
-              <Typography
-                component="h6"
-                align="center"
-                variant="h6"
-                style={{ marginTop: "-20px" , }}
-              >
-                Iniciar sesión
-              </Typography>
+            <Typography
+              component="h6"
+              align="center"
+              variant="h6"
+              style={{ marginTop: "-20px" }}
+            >
+              Iniciar sesión
+            </Typography>
 
-              <br />
-              <Grid
-                container
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Grid item xs={8} md={8} lg={8}>
-                  <TextField label="Usuario" fullWidth />
-                </Grid>
-
-                <Grid item xs={8} md={8} lg={8}>
-                  <FormControl
-                    fullWidth
-                    sx={{ mt: 1, mb: 1 }}
-                    variant="outlined"
-                  >
-                    <InputLabel htmlFor="outlined-adornment-password">
-                      Password
-                    </InputLabel>
-                    <OutlinedInput
-                      id="outlined-adornment-password"
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            edge="end"
-                          >
-                            <Visibility />
-                          </IconButton>
-                        </InputAdornment>
-                      }
-                      label="Password"
-                    />
-                  </FormControl>
-                </Grid>
-                
-                <Grid item xs={8} sx={{ mt: 2, mb: 6 }}>
-                  <Button
-                    type="button"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    onClick={handleLogin}
-                    href="../../pages/home"
-                  >
-                    Ingresar
-                  </Button>
-                </Grid>
+            <br />
+            <Grid
+              container
+              direction="row"
+              justifyContent="center"
+              alignItems="center"
+              spacing={1}
+            >
+              <Grid item xs={8} md={8} lg={8}>
+                <TextField label="Usuario" value={state.user} name={'user'} onChange={handleUserInput} fullWidth />
               </Grid>
-            </form>
+
+              <Grid item xs={8} md={8} lg={8}>
+                <FormControl fullWidth variant="outlined">
+                  <InputLabel htmlFor="outlined-adornment-password">
+                    Password
+                  </InputLabel>
+                  <OutlinedInput
+                    id="outlined-adornment-password"
+                    type={showPassword ? "text" : "password"}
+                    name={'password'}
+                    value={state.password}
+                    onChange={handleUserInput}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    label="Password"
+                  />
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={8} sx={{ mt: 2, mb: 6 }}>
+                <Button
+                  type="button"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  onClick={handleLogin}
+                >
+                  Ingresar
+                </Button>
+              </Grid>
+            </Grid>
+
           </CardContent>
-        </React.Fragment>
+        </>
       </Card>
     </Box>
   );
