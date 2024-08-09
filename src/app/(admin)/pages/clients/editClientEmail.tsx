@@ -179,16 +179,17 @@ export default (props: any) => {
           />
         </Grid>
 
-        <Grid item xs={2} md={2} sm={12}>
+        <Grid item xs={3} md={3} sm={12}>
           <DatePicker
-            sx={{ width: "100%", background: "#e0e0e0" }}
+            sx={{ width: '100%', background: "#e0e0e0" }}
             disabled
+            
             label="Fecha Activacion"
             value={parseISO(client.fechaActivacion.value || "")}
           />
         </Grid>
 
-        <Grid item xs={2} md={2} sm={12}>
+        <Grid item xs={3} md={3} sm={12}>
           <DatePicker
             sx={{ width: "100%", background: "#e0e0e0" }}
             disabled

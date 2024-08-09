@@ -47,6 +47,7 @@ const initialState = {
 
 export default (props: any) => {
   const [state, setState] = useState(initialState.user);
+console.log(state, "user!!");
 
   const [tipoUsuario, setTipoUsuario] = useState<{
     value: string;
@@ -181,7 +182,7 @@ export default (props: any) => {
         codEstatus: estatusUsuario.value,
         loginUsuario: state.loginUsuario.value,
       };
-
+      
       const response = await axiosInstance.post(`usuarios/`, payload);
       Swal.fire({
         title: "Usuario Guardado!",
@@ -195,8 +196,13 @@ export default (props: any) => {
         setRolUsuario((ps) => ({ ...ps, value: "" }));
       });
     } catch (error) {
-      console.error("Error saving user:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Error al Guardar, usuario ya existe!",
+      });
     }
+
   };
 
   const GetRoles = async () => {

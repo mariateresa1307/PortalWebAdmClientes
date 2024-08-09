@@ -9,8 +9,7 @@ const nextConfig = {
     output: "export",
    
     images: {
-        formats: ['image/avif'],
-
+        unoptimized: true
       },
     typescript: {
 
@@ -18,11 +17,4 @@ const nextConfig = {
     }
 };
 
-export default withPlugins([
-    [optimizedImages],
-  
-    nextConfig
-  
-  ]);;
-
-
+export default nextConfig
