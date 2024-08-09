@@ -5,8 +5,10 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
+    environment:
+      - NEXT_NODE_ENV=prod
     restart: on-failure
     volumes:
       - ".:/app/"
     ports:
-      - 80:80
+      - 80:3000
