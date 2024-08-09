@@ -6,23 +6,11 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Box from "@mui/material/Box";
-import dayjs, { Dayjs } from "dayjs";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import * as XLSX from "xlsx-js-style";
-
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import {
-  ButtonGroup,
-  Card,
-  CardContent,
-  Divider,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Divider, TextField } from "@mui/material";
 import CustomModal from "./modalAdd";
 import { useEffect, useState, useCallback } from "react";
-import { read, utils, writeFileXLSX } from "xlsx";
 import { axiosInstance } from "../helpers/axiosConfig";
 import { CustomTable } from "@/app/components/materialTable";
 import logo from "../../app/assets/image/2logonet.png";
@@ -58,7 +46,6 @@ export default function ReportOperaciones(props: any) {
     new Date()
   );
   const [open, setOpen] = useState(false);
-
   const [search, setSearch] = useState("");
   const [operaciones, setOperacionesReport] = useState<OperacionesTable>();
   const [searchParams, setSearchParams] = useState({
@@ -159,18 +146,10 @@ export default function ReportOperaciones(props: any) {
       });
 
       setOperacionesReport(result.data);
-      //setOpen(true);
+      
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const onFinish = (): void => {
-    setSearchParams((prevState) => ({
-      ...prevState,
-      codPagina: searchParams.codPagina,
-      tipoCliente: undefined,
-    }));
   };
 
   useEffect(() => {
@@ -325,20 +304,17 @@ export default function ReportOperaciones(props: any) {
               }
             );
 
-            //const worksheet = XLSX.utils.json_to_sheet([ {}, {} , ...result.data.data]);
-
             const workbook = XLSX.utils.book_new();
             var style = {
               fill: { fgColor: { rgb: "dadee3)" } },
-              alignment: { wrapText: true,  horizontal:"center" },
+              alignment: { wrapText: true, horizontal: "center" },
               border: {
-                  top: { style: 'thin', color: { rgb: '9ca4af' } },
-                  bottom: { style: 'thin', color: { rgb: '9ca4af' } },
-                  left: { style: 'thin', color: { rgb: '9ca4af' } },
-                  right: { style: 'thin', color: { rgb: '9ca4af'   
-           } }
-              }
-          };
+                top: { style: "thin", color: { rgb: "9ca4af" } },
+                bottom: { style: "thin", color: { rgb: "9ca4af" } },
+                left: { style: "thin", color: { rgb: "9ca4af" } },
+                right: { style: "thin", color: { rgb: "9ca4af" } },
+              },
+            };
             const worksheet = XLSX.utils.aoa_to_sheet([
               [
                 {
@@ -365,7 +341,7 @@ export default function ReportOperaciones(props: any) {
                   s: {
                     fill: { fgColor: { rgb: "071c67)" } },
                     font: { bold: true, sz: 14 },
-                    alignment: { horizontal:"right"},
+                    alignment: { horizontal: "right" },
                   },
                 },
                 {
@@ -403,7 +379,7 @@ export default function ReportOperaciones(props: any) {
                   s: {
                     fill: { fgColor: { rgb: "6783e4)" } },
                     font: { bold: true, sz: 12 },
-                    alignment: { wrapText: true,  horizontal:"center" },
+                    alignment: { wrapText: true, horizontal: "center" },
                   },
                 },
                 {
@@ -412,7 +388,7 @@ export default function ReportOperaciones(props: any) {
                   s: {
                     fill: { fgColor: { rgb: "6783e4" } },
                     font: { bold: true, sz: 12 },
-                    alignment: { wrapText: true,  horizontal:"center" },
+                    alignment: { wrapText: true, horizontal: "center" },
                   },
                 },
                 {
@@ -421,7 +397,7 @@ export default function ReportOperaciones(props: any) {
                   s: {
                     fill: { fgColor: { rgb: "6783e4" } },
                     font: { bold: true, sz: 12 },
-                    alignment: { wrapText: true,  horizontal:"center" },
+                    alignment: { wrapText: true, horizontal: "center" },
                   },
                 },
                 {
@@ -430,7 +406,7 @@ export default function ReportOperaciones(props: any) {
                   s: {
                     fill: { fgColor: { rgb: "6783e4" } },
                     font: { bold: true, sz: 12 },
-                    alignment: { wrapText: true,  horizontal:"center" },
+                    alignment: { wrapText: true, horizontal: "center" },
                   },
                 },
                 {
@@ -439,7 +415,7 @@ export default function ReportOperaciones(props: any) {
                   s: {
                     fill: { fgColor: { rgb: "6783e4" } },
                     font: { bold: true, sz: 12 },
-                    alignment: { wrapText: true,  horizontal:"center" },
+                    alignment: { wrapText: true, horizontal: "center" },
                   },
                 },
                 {
@@ -448,7 +424,7 @@ export default function ReportOperaciones(props: any) {
                   s: {
                     fill: { fgColor: { rgb: "6783e4" } },
                     font: { bold: true, sz: 12 },
-                    alignment:{ wrapText: true,  horizontal:"center" },
+                    alignment: { wrapText: true, horizontal: "center" },
                   },
                 },
               ],
@@ -457,49 +433,42 @@ export default function ReportOperaciones(props: any) {
                 {
                   v: result.data?.total,
                   t: "s",
-                  
-              
                 },
                 {
                   v: result.data?.totalResidencial,
                   t: "s",
-                 
                 },
                 {
                   v: result.data?.totalCorporativo,
                   t: "s",
-                
                 },
 
                 {
                   v: result.data?.totalOpActCorreo,
                   t: "s",
-                 
                 },
 
                 {
                   v: result.data?.totalOpActEstatus,
                   t: "s",
-                  
                 },
 
                 {
                   v: result.data?.totalOpActClave,
                   t: "s",
-                  
                 },
               ],
             ]);
             worksheet["!ref"] = "A1:F1";
             worksheet["!cols"] = [
-              { wch: 20 },
+              { wch: 30 },
               { wch: 20 },
               { wch: 20 },
               { wch: 20 },
               { wch: 20 },
               { wch: 20 },
             ];
-            
+
             worksheet.A3.s = style;
             worksheet.B3.s = style;
             worksheet.C3.s = style;
@@ -507,9 +476,6 @@ export default function ReportOperaciones(props: any) {
             worksheet.E3.s = style;
             worksheet.F3.s = style;
             XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
-
-            //const ws = XLSX.utils.json_to_sheet([ {}, {} , ...result.data.data]);
-            //XLSX.utils.book_append_sheet(workbook, ws)
 
             XLSX.utils.sheet_add_aoa(
               worksheet,
@@ -523,7 +489,7 @@ export default function ReportOperaciones(props: any) {
                     s: {
                       fill: { fgColor: { rgb: "6783e4" } },
                       font: { bold: true, sz: 12 },
-                      alignment:{ wrapText: true,  horizontal:"center" },
+                      alignment: { wrapText: true, horizontal: "center" },
                     },
                   },
                   {
@@ -532,7 +498,7 @@ export default function ReportOperaciones(props: any) {
                     s: {
                       fill: { fgColor: { rgb: "6783e4" } },
                       font: { bold: true, sz: 12 },
-                      alignment:{ wrapText: true,  horizontal:"center" },
+                      alignment: { wrapText: true, horizontal: "center" },
                     },
                   },
                   {
@@ -541,7 +507,7 @@ export default function ReportOperaciones(props: any) {
                     s: {
                       fill: { fgColor: { rgb: "6783e4" } },
                       font: { bold: true, sz: 12 },
-                      alignment:{ wrapText: true,  horizontal:"center" },
+                      alignment: { wrapText: true, horizontal: "center" },
                     },
                   },
                   {
@@ -550,7 +516,7 @@ export default function ReportOperaciones(props: any) {
                     s: {
                       fill: { fgColor: { rgb: "6783e4" } },
                       font: { bold: true, sz: 12 },
-                      alignment:{ wrapText: true,  horizontal:"center" },
+                      alignment: { wrapText: true, horizontal: "center" },
                     },
                   },
                   {
@@ -559,26 +525,30 @@ export default function ReportOperaciones(props: any) {
                     s: {
                       fill: { fgColor: { rgb: "6783e4" } },
                       font: { bold: true, sz: 12 },
-                      alignment:{ wrapText: true,  horizontal:"center" },
+                      alignment: { wrapText: true, horizontal: "center" },
                     },
                   },
                 ],
 
-                [
-                  ...result.data.data.map((value: any) => ({
-                    v: value.nombre,
-                    t: "s",
-                    s: { alignment: { vertical: "left" } },
-                  })),
-                ],
+                // ----------------------------------
 
-                [
-                  {
-                    v: operaciones?.data[length]?.nombre,
+                ...result.data.data.map((row: { [x: string]: any }) =>
+                  Object.keys(row).map((column) => ({
+                    v: row[column],
                     t: "s",
-                    s: {},
-                  },
-                ],
+                    s: {
+                      fill: { fgColor: { rgb: "f7f6f6)" } },
+                      alignment: { wrapText: true, horizontal: "center" },
+                      border: {
+                        top: { style: "thin", color: { rgb: "9ca4af" } },
+                        bottom: { style: "thin", color: { rgb: "9ca4af" } },
+                        left: { style: "thin", color: { rgb: "9ca4af" } },
+                        right: { style: "thin", color: { rgb: "9ca4af" } },
+                      },
+                    },
+                  }))
+                ),
+                // ----------------------------------
               ],
               { origin: "A3" }
             );
@@ -701,7 +671,7 @@ export default function ReportOperaciones(props: any) {
             ]}
             data={operaciones?.data || []}
             pagination={{
-              count: (operaciones?.pageCount || 0) * 11,
+              count: operaciones?.total || 0,
               page: (operaciones?.page || 1) - 1,
               itemsPerPage: 10,
               onPageChange: (event, page) => {

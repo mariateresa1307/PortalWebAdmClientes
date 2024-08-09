@@ -9,10 +9,7 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs, { Dayjs } from "dayjs";
-import { Label } from "theme-ui";
 import Swal from "sweetalert2";
 import { axiosInstance } from "@/app/helpers/axiosConfig";
 import { parseISO } from "date-fns";
@@ -146,14 +143,8 @@ export default (props: any) => {
         documento: { ...ps.documento, value: props.client.documento },
         nombre: { ...ps.nombre, value: props.client.nombre },
         correo: { ...ps.correo, value: props.client.correo },
-        fechaActivacion: {
-          ...ps.fechaActivacion,
-          value: props.client.fechaActivacion,
-        },
-        fechaRegistro: {
-          ...ps.fechaRegistro,
-          value: props.client.fechaRegistro,
-        },
+        fechaActivacion: {...ps.fechaActivacion,value: props.client.fechaActivacion},
+        fechaRegistro: {...ps.fechaRegistro,value: props.client.fechaRegistro},
         telefono: { ...ps.telefono, value: props.client.telefono },
         tipoCliente: { ...ps.tipoCliente, value: props.client.tipoCliente },
       }));

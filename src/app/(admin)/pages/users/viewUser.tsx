@@ -11,9 +11,7 @@ import LockIcon from "@mui/icons-material/Lock";
 import { axiosInstance } from "@/app/helpers/axiosConfig";
 import { CustomTable } from "@/app/components/materialTable";
 import { Button, ButtonGroup, Tooltip } from "@mui/material";
-
 interface Data {
-  
   id: number;
   name: string;
   correo: string;
@@ -58,15 +56,20 @@ export default function viewUser(props: any) {
 
   const [searchParams, setSearchParams] = useState({
     codPagina: 1,
-   
+    codDepartamento: undefined,
+    codEstatus: undefined,
+    codTipo: undefined,
+    nombreUsuario: undefined,
   });
   const onFinish = () => {
     setOpen({ active: false, user: {} });
-    //props.getUserList();
-    setSearchParams((prevState) => ({
-      ...prevState,
-      codPagina:searchParams.codPagina,
-    }));
+    setSearchParams({
+      codPagina: 1,
+      codDepartamento: undefined,
+      codEstatus: undefined,
+      codTipo: undefined,
+      nombreUsuario: undefined,
+    });
   };
   const handleDeleteUser = (loginUsuario: string) => {
     Swal.fire({
@@ -79,8 +82,14 @@ export default function viewUser(props: any) {
       confirmButtonText: "Aceptar",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const results = await axiosInstance.delete(`usuarios/${loginUsuario}`);
-        await props.getUserList();
+        await axiosInstance.delete(`usuarios/${loginUsuario}`);
+        setSearchParams({
+          codPagina: 1,
+          codDepartamento: undefined,
+          codEstatus: undefined,
+          codTipo: undefined,
+          nombreUsuario: undefined,
+        });
         Swal.fire({
           title: "Completado",
           text: "Registro Eliminado",
@@ -111,10 +120,9 @@ export default function viewUser(props: any) {
     });
   };
   useEffect(() => {
-    props.getUserList();
+    props.getUserList(searchParams);
   }, [searchParams]);
 
-  
   const handleClose = () => {
     setOpen({
       active: false,
@@ -122,12 +130,10 @@ export default function viewUser(props: any) {
     });
   };
 
-
-
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <SearchSeccion getUserList={props.getUserList} />
+        <SearchSeccion setSearchParams={setSearchParams} />
         <CustomTable
           columns={[
             { field: "nombre", title: "Nombre" },
@@ -172,13 +178,13 @@ export default function viewUser(props: any) {
           ]}
           data={props.users?.data || []}
           pagination={{
-            count: (props.users?.pageCount|| 0) * 10,
+            count: props.users?.totalUsers || 0,
             page: (props.users?.page || 1) - 1,
             itemsPerPage: 10,
             onPageChange: (event, page) => {
               setSearchParams((prevState) => ({
                 ...prevState,
-                codPagina: page +1,
+                codPagina: page + 1,
               }));
             },
           }}

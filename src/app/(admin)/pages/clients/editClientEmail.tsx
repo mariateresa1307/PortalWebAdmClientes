@@ -9,58 +9,44 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
-import dayjs, { Dayjs } from "dayjs";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { axiosInstance } from "@/app/helpers/axiosConfig";
 import Swal from "sweetalert2";
 import { parseISO } from "date-fns";
 
-
-
-const OnlyText = new RegExp(/[a-zA-ZÀ-ÿ]{3,10}$/);
 const Correo = new RegExp(/[\w._%+-]+@[\w.-]+\.[a-zA-Z]{2,4}/);
-const numero = new RegExp(/[\d]{1,10}$/);
+
 export default (props: any) => {
   const [client, setClient] = useState({
     codAbonado: {
       value: 0,
-   
-     
     },
     documento: {
       value: 0,
-    
     },
     nombre: {
       value: "",
-
     },
     fechaActivacion: {
       value: "",
-
     },
     fechaRegistro: {
       value: "",
- 
     },
     telefono: {
       value: 0,
- 
     },
     correo: {
       value: "",
       error: false,
       helperText: "Ingrese el correo",
-      validation: Correo
+      validation: Correo,
     },
     tipoCliente: {
       value: "",
-
     },
     estatus: {
       value: "",
-
     },
   });
   const [value, setValue] = useState<{
@@ -69,15 +55,12 @@ export default (props: any) => {
     value: new Date(),
   });
 
-
-
   const handleGuardar = async () => {
     const prevState = structuredClone(client);
 
     let StateHasError = false;
     Object.keys(prevState).forEach((key: string) => {
-      if(prevState[key].validation) {
-
+      if (prevState[key].validation) {
         if (!prevState[key].validation.test(prevState[key].value)) {
           prevState[key].error = true;
           StateHasError = true;
@@ -85,22 +68,21 @@ export default (props: any) => {
       }
     });
 
-
     if (StateHasError) {
       setClient(prevState);
       return;
     }
 
     try {
-      const session = JSON.parse(localStorage.getItem('ntu-session')  || '{}')
+      const session = JSON.parse(localStorage.getItem("ntu-session") || "{}");
       const payload = {
         loginUsuario: session.loginUsuario,
-        valorNuevo: client.correo.value
+        valorNuevo: client.correo.value,
       };
       const response = await axiosInstance.put(
         `clientes/cambiarcorreo/${client.documento.value}`,
         payload
-        );
+      );
       Swal.fire({
         title: "Email Guardado!",
         icon: "success",
@@ -115,7 +97,7 @@ export default (props: any) => {
     setClient((ps) => ({
       ...ps,
       [propertyName]: {
-        ...ps[propertyName],
+        ...ps[propertyName  as keyof typeof ps & string],
         value: e.target.value,
         error: false,
       },
@@ -130,8 +112,14 @@ export default (props: any) => {
         documento: { ...ps.documento, value: props.client.documento },
         nombre: { ...ps.nombre, value: props.client.nombre },
         correo: { ...ps.correo, value: props.client.correo },
-        fechaActivacion: {...ps.fechaActivacion,value: props.client.fechaActivacion},
-        fechaRegistro: {...ps.fechaRegistro,value: props.client.fechaRegistro},
+        fechaActivacion: {
+          ...ps.fechaActivacion,
+          value: props.client.fechaActivacion,
+        },
+        fechaRegistro: {
+          ...ps.fechaRegistro,
+          value: props.client.fechaRegistro,
+        },
         telefono: { ...ps.telefono, value: props.client.telefono },
         tipoCliente: { ...ps.tipoCliente, value: props.client.tipoCliente },
         estatus: { ...ps.estatus, value: props.client.estatus },
@@ -139,18 +127,14 @@ export default (props: any) => {
     }
   }, [props.client]);
 
-
-
   return (
     <CustomModal
       header={"Gestión de Usuarios"}
       {...props}
       action={{
-        title: 'Guardar',
-        onClick: handleGuardar
+        title: "Guardar",
+        onClick: handleGuardar,
       }}
-
-
     >
       <Typography
         sx={{ ml: 7, mt: 3, flex: 1 }}
@@ -196,27 +180,22 @@ export default (props: any) => {
         </Grid>
 
         <Grid item xs={2} md={2} sm={12}>
-           
-              <DatePicker
-                sx={{ width: "100%", background: "#e0e0e0" }}
-               disabled
-               label="Fecha Activacion"
-               value={parseISO(client.fechaActivacion.value || "")}
-               
-               />
-              </Grid>
-              
-               <Grid item xs={2} md={2} sm={12}>
-              <DatePicker
-                sx={{ width: "100%", background: "#e0e0e0" }}
-                disabled
-                label="Fecha Registro"
-                value={parseISO(client.fechaRegistro.value || "")}
-                //onChange={(newValue) => setValue(newValue)}
-                
-                />
-                        
-       
+          <DatePicker
+            sx={{ width: "100%", background: "#e0e0e0" }}
+            disabled
+            label="Fecha Activacion"
+            value={parseISO(client.fechaActivacion.value || "")}
+          />
+        </Grid>
+
+        <Grid item xs={2} md={2} sm={12}>
+          <DatePicker
+            sx={{ width: "100%", background: "#e0e0e0" }}
+            disabled
+            label="Fecha Registro"
+            value={parseISO(client.fechaRegistro.value || "")}
+            //onChange={(newValue) => setValue(newValue)}
+          />
         </Grid>
       </Grid>
 

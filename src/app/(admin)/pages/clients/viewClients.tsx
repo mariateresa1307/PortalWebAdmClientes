@@ -84,7 +84,7 @@ export default function viewClients(props: any) {
   const onFinish = (): void => {
     setEmail({ active: false, client: {} });
     setEstatus({ active: false, client: {} });
-    props.setSearchParams((prevState) => ({
+    props.setSearchParams((prevState: any) => ({
       ...prevState,
       codPagina: 1,
       tipoCliente: undefined,
@@ -181,11 +181,11 @@ export default function viewClients(props: any) {
           ]}
           data={props.client?.data || []}
           pagination={{
-            count: (props.client?.pageCount || 0) * 10,
+            count: (props.client?.totalUsers || 0),
             page: (props.client?.page || 1) - 1,
             itemsPerPage: 10,
             onPageChange: (event, page) => {
-              props.setSearchParams((prevState) => ({
+              props.setSearchParams((prevState: any) => ({
                 ...prevState,
                 codPagina: page +1,
               }));

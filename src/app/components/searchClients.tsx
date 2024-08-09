@@ -41,7 +41,7 @@ export default function CustomizedDialogs(props: any) {
   };
 
   const handleSearch = async () => {
-    props.setSearchParams(previusState => ({
+    props.setSearchParams((previusState: any) => ({
       ...previusState, 
       codPagina: 1,
       tipoCliente: tipoCliente.value,

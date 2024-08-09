@@ -113,21 +113,15 @@ export default function CustomizedDialogs(props: any) {
     GetDominios();
   }, []);
 
-
-
   const handleSearch = async () => {
-
-  
-    await props.getUserList({
+    props.setSearchParams({
       codPagina: 1,
-      codDepartamento:  departamentoUsuario.value,
-      codEstatus: estatusUsuario.value ,
-      codTipo:  tipoUsuario.value,
-      nombreUsuario: search
-    })
-  }
-
-
+      codDepartamento: departamentoUsuario.value,
+      codEstatus: estatusUsuario.value,
+      codTipo: tipoUsuario.value,
+      nombreUsuario: search,
+    });
+  };
 
   return (
     <div
@@ -169,7 +163,7 @@ export default function CustomizedDialogs(props: any) {
                   name="departamento"
                   onChange={handleDepartamentoUsuarioSelect}
                 >
-                  <MenuItem >Ninguno</MenuItem>
+                  <MenuItem>Ninguno</MenuItem>
                   {departamentoUsuario.options.map((item) => (
                     <MenuItem value={item.id}>{item.label}</MenuItem>
                   ))}
@@ -193,7 +187,7 @@ export default function CustomizedDialogs(props: any) {
                   name="status"
                   onChange={handleStatusUsuarioSelect}
                 >
-                   <MenuItem >Ninguno</MenuItem>
+                  <MenuItem>Ninguno</MenuItem>
                   {estatusUsuario.options.map((item) => (
                     <MenuItem value={item.id}>{item.label}</MenuItem>
                   ))}
@@ -217,7 +211,7 @@ export default function CustomizedDialogs(props: any) {
                   name="tipoUsuario"
                   onChange={handleTipoUsuarioSelect}
                 >
-                   <MenuItem >Ninguno</MenuItem>
+                  <MenuItem>Ninguno</MenuItem>
                   {tipoUsuario.options.map((item) => (
                     <MenuItem value={item.id}>{item.label}</MenuItem>
                   ))}
@@ -241,7 +235,10 @@ export default function CustomizedDialogs(props: any) {
           </Grid>
         </Grid>
         <Grid item md={1}>
-          <Fab style={{ background: " #344a8f", color: "white" }}  onClick={handleSearch} >
+          <Fab
+            style={{ background: " #344a8f", color: "white" }}
+            onClick={handleSearch}
+          >
             <SearchIcon />
           </Fab>
         </Grid>

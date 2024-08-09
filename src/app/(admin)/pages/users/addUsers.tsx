@@ -16,8 +16,8 @@ import { FormHelperText } from "@mui/material";
 const OnlyText = new RegExp(/[a-zA-ZÀ-ÿ]{3,10}$/);
 const Correo = new RegExp(/[\w._%+-]+@[\w.-]+\.[a-zA-Z]{2,4}/);
 
-export default (props: any) => {
-  const [state, setState] = useState({
+const initialState = {
+  user: {
     nombre: {
       value: "",
       error: false,
@@ -42,7 +42,11 @@ export default (props: any) => {
       helperText: "Ingrese el nombre de usuario",
       validation: OnlyText,
     },
-  });
+  },
+};
+
+export default (props: any) => {
+  const [state, setState] = useState(initialState.user);
 
   const [tipoUsuario, setTipoUsuario] = useState<{
     value: string;
@@ -93,11 +97,11 @@ export default (props: any) => {
   });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const propertyName: string = e.target.name;
+    const propertyName = e.target.name;
     setState((ps) => ({
       ...ps,
       [propertyName]: {
-        ...ps[propertyName],
+        ...ps[propertyName as keyof typeof ps & string],
         value: e.target.value,
         error: false,
       },
@@ -137,14 +141,15 @@ export default (props: any) => {
   };
 
   const handleGuardar = async () => {
-    const prevState = structuredClone(state);
+    const prevState: { [key: string]: { [key: string]: any } } =
+      structuredClone(state);
 
     let StateHasError = false;
-    Object.keys(prevState).forEach((key: string) => {
-      /*  if (!prevState[key].validation.test(prevState[key].value)) {
-          prevState[key].error = true;
-          StateHasError = true;
-        }*/
+    Object.keys(prevState).forEach((key) => {
+      if (!prevState[key].validation.test(prevState[key].value)) {
+        prevState[key].error = true;
+        StateHasError = true;
+      }
     });
 
     if (!tipoUsuario.value) {
@@ -161,7 +166,7 @@ export default (props: any) => {
     }
 
     if (StateHasError) {
-      setState(prevState);
+      setState(prevState as typeof state);
       return;
     }
 
@@ -181,7 +186,14 @@ export default (props: any) => {
       Swal.fire({
         title: "Usuario Guardado!",
         icon: "success",
-      }).then(() => props.onFinish());
+      }).then(() => {
+        props.onFinish();
+        setState(initialState.user);
+        setTipoUsuario((ps) => ({ ...ps, value: "" }));
+        setDepartamentoUsuario((ps) => ({ ...ps, value: "" }));
+        setEstatusUsuario((ps) => ({ ...ps, value: "" }));
+        setRolUsuario((ps) => ({ ...ps, value: "" }));
+      });
     } catch (error) {
       console.error("Error saving user:", error);
     }
@@ -239,8 +251,8 @@ export default (props: any) => {
       header={"Gestión de Usuarios"}
       {...props}
       action={{
-        title: 'Guardar',
-        onClick: handleGuardar
+        title: "Guardar",
+        onClick: handleGuardar,
       }}
     >
       <Typography

@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  netuno-panel:
+    container_name: netuno-panel
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: on-failure
+    volumes:
+      - ".:/app/"
+    ports:
+      - 80:80

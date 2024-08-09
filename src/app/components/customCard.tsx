@@ -1,23 +1,18 @@
 import React from "react"
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
-
 interface DetailsCardProps {
-  icons:  React.ReactNode,
+  icons: React.ReactNode,
   title: string,
-  content:string,
-  background:string,
+  content: string,
+  background: string,
+}
 
-
-} 
-
-
-const DetailsCard = ( {  icons, title, content, background } : DetailsCardProps) => (
+const DetailsCard = ({ icons, title, content, background }: DetailsCardProps) => (
   <>
-    <Card elevation={0} style={{ width:"100%" , backgroundImage: background}}>
+    <Card elevation={0} style={{ width: "100%", backgroundImage: background }}>
       <CardContent className="card-content">
         <Grid container spacing={3} justifyContent="center">
           <Grid item xs={12} sm={12} md={12} lg={10}>
@@ -29,7 +24,7 @@ const DetailsCard = ( {  icons, title, content, background } : DetailsCardProps)
             </Typography>
           </Grid>
 
-         
+
         </Grid>
       </CardContent>
     </Card>

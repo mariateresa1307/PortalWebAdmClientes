@@ -221,7 +221,7 @@ export default (props: any) => {
     setUser((ps) => ({
       ...ps,
       [propertyName]: {
-        ...ps[propertyName],
+        ...ps[propertyName ],
         value: e.target.value,
         error: false,
       },

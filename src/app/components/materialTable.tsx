@@ -7,25 +7,22 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
-import logo from "../../app/assets/image/user1.jpeg";
-import Image from "next/image";
 import { ReactNode } from "react";
 
 interface CustomTable {
-  columns: Array<{ 
-    title: string; 
-    field: string | null; 
-    render?: (row: any) => ReactNode }>;
+  columns: Array<{
+    title: string;
+    field: string | null;
+    render?: (row: any) => ReactNode
+  }>;
   data: Array<any>;
   pagination: {
     count: number;
     page: number;
     itemsPerPage: number;
-    onPageChange:(event: React.MouseEvent<HTMLButtonElement> | null, page: number) => void
+    onPageChange: (event: React.MouseEvent<HTMLButtonElement> | null, page: number) => void
   }
 }
-
-
 export const CustomTable = (props: CustomTable) => {
   return <>
     <TableContainer>
@@ -53,25 +50,25 @@ export const CustomTable = (props: CustomTable) => {
               hover
               tabIndex={-1}
               key={row.id}
-              
+
               sx={{ cursor: "pointer" }}
             >
               {props.columns.map((headCell) => {
                 let value = null;
 
-                if(headCell.field) {
+                if (headCell.field) {
                   value = row[headCell.field];
-                } else{
-                  if(headCell.render) {
+                } else {
+                  if (headCell.render) {
                     value = headCell.render(row);
                   }
                 }
-                  
 
-                return <TableCell  key={headCell.field + row.id} align={"center"} >
-                  {  value }
-                  </TableCell>
-            })}
+
+                return <TableCell key={headCell.field + row.id} align={"center"} >
+                  {value}
+                </TableCell>
+              })}
             </TableRow>;
           })}
         </TableBody>
@@ -80,7 +77,7 @@ export const CustomTable = (props: CustomTable) => {
     <TablePagination
       rowsPerPageOptions={[10]}
       component="div"
-      count={ props.pagination.count }
+      count={props.pagination.count}
       rowsPerPage={props.pagination.itemsPerPage}
       page={props.pagination.page}
       onPageChange={props.pagination.onPageChange}

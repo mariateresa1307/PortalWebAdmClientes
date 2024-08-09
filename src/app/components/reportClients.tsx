@@ -7,10 +7,8 @@ import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Box from "@mui/material/Box";
 import { format } from "date-fns";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { Card, CardContent, Divider, Typography } from "@mui/material";
+import {  Divider } from "@mui/material";
 import CustomModal from "../components/modalAdd";
 import { useEffect, useState, useCallback } from "react";
 import { axiosInstance } from "../helpers/axiosConfig";
@@ -18,9 +16,8 @@ import { CustomTable } from "@/app/components/materialTable";
 import logo from "../../app/assets/image/2logonet.png";
 import Image from "next/image";
 import CustomCard from "./customCard";
-import * as XLSX from "xlsx";
+import * as XLSX from "xlsx-js-style";
 import { getSession } from "@/app/helpers/session";
-
 interface ClientTable {
   data: Array<{
     id: number;
@@ -34,7 +31,6 @@ interface ClientTable {
     status: string;
     telefono: number;
     totalUsers: number;
-
   }>;
   page: number;
   pageCount: number;
@@ -42,51 +38,56 @@ interface ClientTable {
   activeUsers: number;
   inactiveUsers: number;
   totalUsers: number;
-  totalActDate:number;
-  totalRegDate:number;
+  totalActDate: number;
+  totalRegDate: number;
 }
 
 export default function ReportClients(props: any) {
- 
-  const [fechaInicioRegistro, setFechaInicioRegistro] = useState<Date>(new Date());
+  const [fechaInicioRegistro, setFechaInicioRegistro] = useState<Date>(
+    new Date()
+  );
   const [fechaFinRegistro, setFechaFinRegistro] = useState<Date>(new Date());
-  const [fechaInicioActivacion, setFechaInicioActivacion] = useState<Date>( new Date() );
-  const [fechaFinActivacion, setFechaFinActivacion] = useState<Date>(   new Date() );
+  const [fechaInicioActivacion, setFechaInicioActivacion] = useState<Date>(
+    new Date()
+  );
+  const [fechaFinActivacion, setFechaFinActivacion] = useState<Date>(
+    new Date()
+  );
   const [open, setOpen] = useState(false);
-
 
   const [searchParams, setSearchParams] = useState({
     loginUsuario: getSession().loginUsuario,
-    codPagina:1,
-    tipoCliente:undefined,
-    documento:undefined
+    codPagina: 1,
+    tipoCliente: undefined,
+    documento: undefined,
   });
 
-
   const [client, setClient] = useState<ClientTable>();
-  const [clientExport, setClientExport] = useState<ClientTable>();
+
   const [tipoCliente, setTipoCliente] = useState<{
-    value: string,
+    value: string;
     options: Array<{ label: String; id: string }>;
     error: boolean;
     helperText: string;
   }>({
     value: "1",
-    options: [{
-     
-     id: "1",
-      label: "Residencial"
-    }, {
-      id: "2",
-      label: "Corporativo"
-    }, {
-      id: "3",
-      label: "Residencial+Corporativo"
-    }],
+    options: [
+      {
+        id: "1",
+        label: "Residencial",
+      },
+      {
+        id: "2",
+        label: "Corporativo",
+      },
+      {
+        id: "3",
+        label: "Residencial+Corporativo",
+      },
+    ],
     error: false,
     helperText: "Seleccionar campo",
   });
-
 
   const [estatus, setEstatusCliente] = useState<{
     value: string;
@@ -127,22 +128,16 @@ export default function ReportClients(props: any) {
     }));
   };
 
-
-
   const onFinish = (): void => {
-    
     setSearchParams((prevState) => ({
       ...prevState,
       codPagina: searchParams.codPagina,
       tipoCliente: undefined,
-     
     }));
-    
   };
 
   const getClientReport = async () => {
     try {
-    
       const result = await axiosInstance.get(`clientes/reporteClientes`, {
         params: {
           loginUsuario: searchParams.loginUsuario,
@@ -155,25 +150,20 @@ export default function ReportClients(props: any) {
           codEstatus: estatus.value,
         },
       });
-     
+
       setClient(result.data);
-  //   setOpen(true);
     } catch (error) {
       console.log(error);
     }
   };
 
-
   useEffect(() => {
     GetDominios();
-    
   }, []);
 
-
-  useEffect( () => {
-    getClientReport()
-    
-  }, [searchParams])
+  useEffect(() => {
+    getClientReport();
+  }, [searchParams]);
 
   const handleTipoClienteelect = (e: SelectChangeEvent<string>) => {
     setTipoCliente((prevState) => ({
@@ -288,13 +278,15 @@ export default function ReportClients(props: any) {
         </Grid>
 
         <Grid textAlign="center" sx={{ mt: 3 }} item xs={12} md={12}>
-          <Button variant="contained"  onClick={() => {
-            setSearchParams((ps) => ({
-              ...ps,
-            
-            }))
-          setOpen(true);
-          }}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              setSearchParams((ps) => ({
+                ...ps,
+              }));
+              setOpen(true);
+            }}
+          >
             Generar Reporte
           </Button>
         </Grid>
@@ -302,16 +294,14 @@ export default function ReportClients(props: any) {
 
       <CustomModal
         open={open}
-       
         handleClose={handleClose}
-        title={"Reporte Clientes"}
+        title={"Reporte de Clientes"}
         action={{
           title: "Descargar excel",
           onClick: async () => {
-
-           
-             
-              const result = await axiosInstance.get(`clientes/reporteClientes/exportar`, {
+            const result = await axiosInstance.get(
+              `clientes/reporteClientes/exportar`,
+              {
                 params: {
                   loginUsuario: searchParams.loginUsuario,
                   fIniRegistro: format(fechaInicioRegistro, "yyyy-MM-dd"),
@@ -321,60 +311,312 @@ export default function ReportClients(props: any) {
                   tipoCliente: tipoCliente.value,
                   codEstatus: estatus.value,
                 },
-              });
-              
-       
-            const worksheet = XLSX.utils.json_to_sheet([ {}, {} , ...result.data.data]);
-
-
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Dates");
-            XLSX.utils.sheet_add_aoa(
-              worksheet,
-              [
-                
-                [
-                  "Total Clientes",
-                  "Activos",
-                  "Inactivos",
-                  "Total con fecha registro",
-                  "Total con fecha Activación",
-                  "",
-                  "",
-                  "",
-                  "",
-              
-                ],
-                [
-                  `${result.data?.totalUsers}` ,`${result.data?.activeUsers}`,`${result.data?.inactiveUsers}`,0,0,"","","","",
-                ]
-              ],
-              { origin: "A1" }
+              }
             );
 
-            
+            const workbook = XLSX.utils.book_new();
+            var style = {
+              fill: { fgColor: { rgb: "dadee3)" } },
+              alignment: { wrapText: true, horizontal: "center" },
+              border: {
+                top: { style: "thin", color: { rgb: "9ca4af" } },
+                bottom: { style: "thin", color: { rgb: "9ca4af" } },
+                left: { style: "thin", color: { rgb: "9ca4af" } },
+                right: { style: "thin", color: { rgb: "9ca4af" } },
+              },
+            };
+
+            const worksheet = XLSX.utils.aoa_to_sheet([
+              [
+                {
+                  v: "",
+                  t: "s",
+                  s: {
+                    fill: { fgColor: { rgb: "071c67)" } },
+                    font: { bold: true, sz: 14 },
+                    alignment: { wrapText: true },
+                  },
+                },
+                {
+                  v: "",
+                  t: "s",
+                  s: {
+                    fill: { fgColor: { rgb: "071c67)" } },
+                    font: { bold: true, sz: 15 },
+                    alignment: { wrapText: true },
+                  },
+                },
+                {
+                  v: "",
+                  t: "s",
+                  s: {
+                    fill: { fgColor: { rgb: "071c67)" } },
+                    font: { bold: true, sz: 14 },
+                    alignment: { wrapText: true },
+                  },
+                },
+                {
+                  v: "Reporte de",
+                  t: "s",
+                  s: {
+                    fill: { fgColor: { rgb: "071c67)" } },
+                    font: { bold: true, sz: 15 },
+                    alignment: { horizontal: "right" },
+                  },
+                },
+                {
+                  v: " Clientes",
+                  t: "s",
+                  s: {
+                    fill: { fgColor: { rgb: "071c67)" } },
+                    font: { bold: true, sz: 15 },
+                    alignment: { wrapText: true },
+                  },
+                },
+
+                {
+                  v: "",
+                  t: "s",
+                  s: {
+                    fill: { fgColor: { rgb: "071c67)" } },
+                    font: { bold: true, sz: 14 },
+                    alignment: { wrapText: true },
+                  },
+                },
+                {
+                  v: "",
+                  t: "s",
+                  s: {
+                    fill: { fgColor: { rgb: "071c67)" } },
+                    font: { bold: true, sz: 14 },
+                    alignment: { wrapText: true },
+                  },
+                },
+                {
+                  v: "",
+                  t: "s",
+                  s: {
+                    fill: { fgColor: { rgb: "071c67)" } },
+                    font: { bold: true, sz: 14 },
+                    alignment: { wrapText: true },
+                  },
+                },
+                {
+                  v: "",
+                  t: "s",
+                  s: {
+                    fill: { fgColor: { rgb: "071c67)" } },
+                    font: { bold: true, sz: 14 },
+                    alignment: { wrapText: true },
+                  },
+                },
+              ],
+              [
+                {
+                  v: "Total Clientes",
+                  t: "s",
+                  s: {
+                    fill: { fgColor: { rgb: "6783e4)" } },
+                    font: { bold: true, sz: 12 },
+                    alignment: { wrapText: true, horizontal: "center" },
+                  },
+                },
+                {
+                  v: "Clientes Activos",
+                  t: "s",
+                  s: {
+                    fill: { fgColor: { rgb: "6783e4" } },
+                    font: { bold: true, sz: 12 },
+                    alignment: { wrapText: true, horizontal: "center" },
+                  },
+                },
+                {
+                  v: "Clientes Inactivos",
+                  t: "s",
+                  s: {
+                    fill: { fgColor: { rgb: "6783e4" } },
+                    font: { bold: true, sz: 12 },
+                    alignment: { wrapText: true, horizontal: "center" },
+                  },
+                },
+                {
+                  v: "Total con fecha registro",
+                  t: "s",
+                  s: {
+                    fill: { fgColor: { rgb: "6783e4" } },
+                    font: { bold: true, sz: 12 },
+                    alignment: { wrapText: true, horizontal: "center" },
+                  },
+                },
+                {
+                  v: "Total con fecha de Activación",
+                  t: "s",
+                  s: {
+                    fill: { fgColor: { rgb: "6783e4" } },
+                    font: { bold: true, sz: 12 },
+                    alignment: { wrapText: true, horizontal: "center" },
+                  },
+                },
+              ],
+              [
+                {
+                  v: result.data?.totalUsers,
+                  t: "s",
+                },
+                {
+                  v: result.data?.activeUsers,
+                  t: "s",
+                },
+                {
+                  v: result.data?.inactiveUsers,
+                  t: "s",
+                },
+
+                {
+                  v: result.data?.totalRegDate,
+                  t: "s",
+                },
+
+                {
+                  v: result.data?.totalActDate,
+                  t: "s",
+                },
+              ],
+            ]);
+            worksheet["!ref"] = "A1:I1";
+            worksheet["!cols"] = [
+              { wch: 20 },
+              { wch: 40 },
+              { wch: 30 },
+              { wch: 20 },
+              { wch: 20 },
+              { wch: 20 },
+              { wch: 20 },
+              { wch: 20 },
+              { wch: 20 },
+            ];
+            worksheet.A3.s = style;
+            worksheet.B3.s = style;
+            worksheet.C3.s = style;
+            worksheet.D3.s = style;
+            worksheet.E3.s = style;
+
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
 
             XLSX.utils.sheet_add_aoa(
               worksheet,
               [
-                
+                [],
+                [],
                 [
-                  "Abonados",
-                  "Nombres",
-                  "Correo Electrónico",
-                  "Tipo Cliente	",
-                  "Documento",
-                  "Fecha Registro	",
-                  "Fecha Activación",
-                  "Estatus",
-                  "Teléfono",
-              
+                  {
+                    v: "Abonados",
+                    t: "s",
+                    s: {
+                      fill: { fgColor: { rgb: "6783e4" } },
+                      font: { bold: true, sz: 12 },
+                      alignment: { wrapText: true, horizontal: "center" },
+                    },
+                  },
+                  {
+                    v: "Nombres",
+                    t: "s",
+                    s: {
+                      fill: { fgColor: { rgb: "6783e4" } },
+                      font: { bold: true, sz: 12 },
+                      alignment: { wrapText: true, horizontal: "center" },
+                    },
+                  },
+                  {
+                    v: "Correo Electrónico",
+                    t: "s",
+                    s: {
+                      fill: { fgColor: { rgb: "6783e4" } },
+                      font: { bold: true, sz: 12 },
+                      alignment: { wrapText: true, horizontal: "center" },
+                    },
+                  },
+                  {
+                    v: "Tipo Cliente	",
+                    t: "s",
+                    s: {
+                      fill: { fgColor: { rgb: "6783e4" } },
+                      font: { bold: true, sz: 12 },
+                      alignment: { wrapText: true, horizontal: "center" },
+                    },
+                  },
+                  {
+                    v: "Documento",
+                    t: "s",
+                    s: {
+                      fill: { fgColor: { rgb: "6783e4" } },
+                      font: { bold: true, sz: 12 },
+                      alignment: { wrapText: true, horizontal: "center" },
+                    },
+                  },
+                  {
+                    v: "Fecha Registro	",
+                    t: "s",
+                    s: {
+                      fill: { fgColor: { rgb: "6783e4" } },
+                      font: { bold: true, sz: 12 },
+                      alignment: { wrapText: true, horizontal: "center" },
+                    },
+                  },
+                  {
+                    v: "Fecha Activación",
+                    t: "s",
+                    s: {
+                      fill: { fgColor: { rgb: "6783e4" } },
+                      font: { bold: true, sz: 12 },
+                      alignment: { wrapText: true, horizontal: "center" },
+                    },
+                  },
+                  {
+                    v: "Estatus",
+                    t: "s",
+                    s: {
+                      fill: { fgColor: { rgb: "6783e4" } },
+                      font: { bold: true, sz: 12 },
+                      alignment: { wrapText: true, horizontal: "center" },
+                    },
+                  },
+                  {
+                    v: "Teléfono",
+                    t: "s",
+                    s: {
+                      fill: { fgColor: { rgb: "6783e4" } },
+                      font: { bold: true, sz: 12 },
+                      alignment: { wrapText: true, horizontal: "center" },
+                    },
+                  },
                 ],
+                // ----------------------------------
+
+                ...result.data.data.map((row: { [x: string]: any }) =>
+                  Object.keys(row).map((column) => ({
+                    v: row[column],
+                    t: "s",
+                    s: {
+                      fill: { fgColor: { rgb: "f7f6f6)" } },
+                      alignment: { wrapText: true, horizontal: "center" },
+                      border: {
+                        top: { style: "thin", color: { rgb: "9ca4af" } },
+                        bottom: { style: "thin", color: { rgb: "9ca4af" } },
+                        left: { style: "thin", color: { rgb: "9ca4af" } },
+                        right: { style: "thin", color: { rgb: "9ca4af" } },
+                      },
+                    },
+                  }))
+                ),
+                // ----------------------------------
               ],
               { origin: "A3" }
             );
 
-            XLSX.writeFile(workbook, "Reporte .xlsx", { compression: true });
+            XLSX.writeFile(workbook, "Reporte Clientes .xlsx", {
+              compression: true,
+            });
           },
         }}
       >
@@ -483,18 +725,16 @@ export default function ReportClients(props: any) {
               { field: "fechaActivacion", title: "Fecha Activacion" },
               { field: "estatus", title: "Estatus" },
               { field: "telefono", title: "Telefono" },
-         
             ]}
             data={client?.data || []}
             pagination={{
-              count: (client?.pageCount || 0) * 10,
-              page: (client?.page || 1) -1,
-              itemsPerPage: 10, 
+              count: client?.totalUsers || 0,
+              page: (client?.page || 1) - 1,
+              itemsPerPage: 10,
               onPageChange: (event, page) => {
-               
                 setSearchParams((prevState) => ({
                   ...prevState,
-                  codPagina: page +1,
+                  codPagina: page + 1,
                 }));
               },
             }}
