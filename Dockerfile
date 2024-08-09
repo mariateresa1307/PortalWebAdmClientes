@@ -1,9 +1,8 @@
 FROM node:18 as build
+COPY . ./app
 WORKDIR /app
-COPY . ./
-CMD npm ci
-CMD npm run build
-#CMD npm run start
+RUN npm ci
+RUN npm run build
 
 
 FROM nginx:alpine
