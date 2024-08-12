@@ -444,6 +444,7 @@ export default (props: any) => {
             name={"loginUsuario"}
             label="Nombre Usuario"
             fullWidth
+            disabled
             variant="filled"
             value={user.loginUsuario.value}
             onChange={handleChange}

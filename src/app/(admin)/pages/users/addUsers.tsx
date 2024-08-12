@@ -285,6 +285,7 @@ console.log(state, "user!!");
             fullWidth
             variant="filled"
             required
+
             error={state.nombre.error}
             helperText={state.nombre.error ? state.nombre.helperText : null}
           />

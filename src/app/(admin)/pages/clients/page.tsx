@@ -96,7 +96,7 @@ export default function clients(props: any) {
         </Grid>
         <Grid item xs={3} md={3}>
           <CustomCard
-            title=" Total Usuarios"
+            title=" Total Clientes"
             content={`${client?.totalUsers || "0"}`}
             background={
               "radial-gradient(circle at -20.71% 50%, #de9c2c 0, #e5922a 8.33%, #ea852b 16.67%, #ee772d 25%, #f16731 33.33%, #f35436 41.67%, #f23c3c 50%, #f01843 58.33%, #ed004c 66.67%, #e90057 75%, #e30064 83.33%, #db0071 91.67%, #d10080 100%)"
