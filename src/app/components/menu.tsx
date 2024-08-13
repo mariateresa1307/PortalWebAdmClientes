@@ -21,6 +21,8 @@ import PeopleIcon from "@mui/icons-material/People";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import TextSnippetIcon from "@mui/icons-material/TextSnippet";
 import MyProfile from "./profile";
+import {  hasAvailablePage } from "../helpers/availablePages";
+import { useState } from "react";
 
 const drawerWidth = 240;
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
@@ -76,7 +78,8 @@ interface DrawerLeftProps {
 }
 export default function PersistentDrawerLeft({ children }: DrawerLeftProps) {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
+  const [MenuItemsState, setMenuItems] = useState(<> </>);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -85,6 +88,41 @@ export default function PersistentDrawerLeft({ children }: DrawerLeftProps) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+
+
+  React.useEffect(() => {
+    setMenuItems(
+      <>
+        {hasAvailablePage("/home") && (
+          <ListItem component={Link} href="/pages/home">
+            <ListItemIcon>
+              <AccountCircleIcon />
+            </ListItemIcon>
+            <ListItemText style={{ color: "gray" }} primary={"Usuario"} />
+          </ListItem>
+        )}
+
+        {hasAvailablePage("/clients") && (
+          <ListItem component={Link} href="/pages/clients">
+            <ListItemIcon>
+              <PeopleIcon />
+            </ListItemIcon>
+            <ListItemText style={{ color: "gray" }} primary={"Clientes"} />
+          </ListItem>
+        )}
+
+        {hasAvailablePage("/reports") && (
+          <ListItem component={Link} href="/pages/reports">
+            <ListItemIcon>
+              <TextSnippetIcon />
+            </ListItemIcon>
+            <ListItemText style={{ color: "gray" }} primary={"Reportes"} />
+          </ListItem>
+        )}
+      </>
+    );
+  }, []);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -141,28 +179,7 @@ export default function PersistentDrawerLeft({ children }: DrawerLeftProps) {
             borderBottom: "5px solid #7fb300",
           }}
         />
-        <List>
-          <ListItem component={Link} href="/pages/home">
-            <ListItemIcon>
-              <AccountCircleIcon />
-            </ListItemIcon>
-            <ListItemText style={{ color: "gray" }} primary={"Usuario"} />
-          </ListItem>
-
-          <ListItem component={Link} href="/pages/clients">
-            <ListItemIcon>
-              <PeopleIcon />
-            </ListItemIcon>
-            <ListItemText style={{ color: "gray" }} primary={"Clientes"} />
-          </ListItem>
-
-          <ListItem component={Link} href="/pages/reports">
-            <ListItemIcon>
-              <TextSnippetIcon />
-            </ListItemIcon>
-            <ListItemText style={{ color: "gray" }} primary={"Reportes"} />
-          </ListItem>
-        </List>
+        <List>{MenuItemsState}</List>
         <Divider />
       </Drawer>
       <Main open={open} sx={{ pb: 10 }}>

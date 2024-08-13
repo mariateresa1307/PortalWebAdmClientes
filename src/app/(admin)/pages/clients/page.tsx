@@ -5,7 +5,7 @@ import ViewClients from "../../pages/clients/viewClients";
 import Typography from "@mui/material/Typography";
 import PersonIcon from "@mui/icons-material/Person";
 import CustomCard from "../../../components/customCard";
-import BarChartIcon from "@mui/icons-material/BarChart";
+import BarChartIcon from '@mui/icons-material/BarChart';
 import { axiosInstance } from "@/app/helpers/axiosConfig";
 import { getSession } from "@/app/helpers/session";
 
@@ -63,8 +63,13 @@ export default function clients(props: any) {
     
   }, [searchParams]);
 
+
+
+
   return (
     <>
+    
+    
       <Typography
         sx={{ flex: 1, mb: 3 }}
         style={{ color: "#315e7f", fontWeight: "bold", fontSize: "22px" }}

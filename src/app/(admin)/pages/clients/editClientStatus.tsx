@@ -143,8 +143,14 @@ export default (props: any) => {
         documento: { ...ps.documento, value: props.client.documento },
         nombre: { ...ps.nombre, value: props.client.nombre },
         correo: { ...ps.correo, value: props.client.correo },
-        fechaActivacion: {...ps.fechaActivacion,value: props.client.fechaActivacion},
-        fechaRegistro: {...ps.fechaRegistro,value: props.client.fechaRegistro},
+        fechaActivacion: {
+          ...ps.fechaActivacion,
+          value: props.client.fechaActivacion,
+        },
+        fechaRegistro: {
+          ...ps.fechaRegistro,
+          value: props.client.fechaRegistro,
+        },
         telefono: { ...ps.telefono, value: props.client.telefono },
         tipoCliente: { ...ps.tipoCliente, value: props.client.tipoCliente },
       }));
@@ -268,7 +274,10 @@ export default (props: any) => {
               id="demo-simple-select-filled"
               value={client.tipoCliente.value}
             >
-              <MenuItem value={client.tipoCliente.value}>
+              <MenuItem
+                value={client.tipoCliente.value}
+                key={client.tipoCliente.value}
+              >
                 <em>{client.tipoCliente.value}</em>
               </MenuItem>
             </Select>
@@ -287,7 +296,7 @@ export default (props: any) => {
               onChange={handleStatusClienteSelect}
             >
               {estatus.options.map((estado) => (
-                <MenuItem value={estado.id}>
+                <MenuItem key={estado.id} value={estado.id}>
                   <em>{estado.label}</em>
                 </MenuItem>
               ))}

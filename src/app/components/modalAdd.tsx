@@ -52,6 +52,7 @@ export default function CustomModal(props: any) {
               color="inherit"
               style={{ fontWeight: "bold" }}
               onClick={props.action.onClick}
+              disabled={props.action.disabled || false}
             >
               {props.action.title}
             </Button>

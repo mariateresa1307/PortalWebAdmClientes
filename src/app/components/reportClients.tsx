@@ -17,7 +17,7 @@ import logo from "../../app/assets/image/2logonet.png";
 import Image from "next/image";
 import CustomCard from "./customCard";
 import * as XLSX from "xlsx-js-style";
-import { getSession } from "@/app/helpers/session";
+import { findAccion, getSession } from "@/app/helpers/session";
 interface ClientTable {
   data: Array<{
     id: number;
@@ -43,6 +43,9 @@ interface ClientTable {
 }
 
 export default function ReportClients(props: any) {
+  const [permissions, setPermissions] = useState({
+    exportClients: false
+  })
   const [fechaInicioRegistro, setFechaInicioRegistro] = useState<Date>(
     new Date()
   );
@@ -181,6 +184,31 @@ export default function ReportClients(props: any) {
     }));
   };
 
+
+
+  const checkPermissions = async () => {
+
+    const [resultReportClients] = await Promise.all([
+      axiosInstance.get(`acciones/usuario/${getSession().loginUsuario}/pagina/${3}`),
+      
+    ])
+
+    const dataResultReportClients: Array<{codAccion: string, nombreAccion: string}> = resultReportClients.data;
+    
+
+
+    setPermissions({
+      exportClients: findAccion('Exportar', dataResultReportClients),
+    })
+  }
+
+
+  useEffect(() => {
+    checkPermissions()  
+  }, [])
+
+
+
   return (
     <>
       <Grid container spacing={2}>
@@ -248,7 +276,7 @@ export default function ReportClients(props: any) {
               >
                 <MenuItem>Ninguno</MenuItem>
                 {tipoCliente.options.map((item) => (
-                  <MenuItem value={item.id}>{item.label}</MenuItem>
+                  <MenuItem key={item.id} value={item.id}>{item.label}</MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -268,7 +296,7 @@ export default function ReportClients(props: any) {
               >
                 <MenuItem>Ninguno</MenuItem>
                 {estatus.options.map((estado) => (
-                  <MenuItem value={estado.id}>
+                  <MenuItem  key={estado.id} value={estado.id}>
                     <em>{estado.label}</em>
                   </MenuItem>
                 ))}
@@ -618,6 +646,7 @@ export default function ReportClients(props: any) {
               compression: true,
             });
           },
+          disabled: !permissions.exportClients
         }}
       >
         <div style={{ padding: "15px" }}>

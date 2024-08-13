@@ -18,16 +18,23 @@ import Tab from "@mui/material/Tab";
 import ReportOperaciones from "../../../components/reportOperaciones";
 import ReportClients from "../../../components/reportClients";
 import { read, utils, writeFileXLSX } from "xlsx";
+import {
+  AvailablePagesMap,
+  hasAvailablePage,
+} from "@/app/helpers/availablePages";
+import { getAvailablePagesFromSession } from "@/app/helpers/session";
 
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
+  disabled?: boolean;
 }
 
 function CustomTabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
+  const { children, value, index, disabled, ...other } = props;
 
+  if (disabled) return <></>;
   return (
     <div
       role="tabpanel"
@@ -52,6 +59,10 @@ export default function Report() {
   const [open, setOpen] = React.useState(false);
   const [age, setAge] = React.useState("");
   const [taps, setTaps] = React.useState(0);
+  const [permissions, setPermissions] = React.useState({
+    enabledClients: false,
+    enabledOperations: false,
+  });
 
   const handleChange1 = (event: React.SyntheticEvent, newValue: number) => {
     setTaps(newValue);
@@ -64,6 +75,29 @@ export default function Report() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  React.useEffect(() => {
+    const availablePagesFromSession = getAvailablePagesFromSession();
+    const AvailablePpagesMapsKeys = Object.keys(AvailablePagesMap);
+
+    let enabledClients = false;
+    for (const availablePage of availablePagesFromSession) {
+      if (availablePage.nombrePagina === AvailablePpagesMapsKeys[2]) {
+        enabledClients = true;
+        break;
+      }
+    }
+
+    let enabledOperations = false;
+    for (const availablePage of availablePagesFromSession) {
+      if (availablePage.nombrePagina === AvailablePpagesMapsKeys[3]) {
+        enabledOperations = true;
+        break;
+      }
+    }
+
+    setPermissions({ enabledClients, enabledOperations });
+  }, []);
 
   return (
     <>
@@ -100,14 +134,26 @@ export default function Report() {
                 onChange={handleChange1}
                 aria-label="basic tabs example"
               >
-                <Tab label="Clientes" {...a11yProps(1)} />
-                <Tab label="Operaciones" {...a11yProps(0)} />
+                {permissions.enabledClients && (
+                  <Tab label="Clientes" {...a11yProps(1)} />
+                )}
+                {permissions.enabledOperations && (
+                  <Tab label="Operaciones" {...a11yProps(0)} />
+                )}
               </Tabs>
             </Box>
-            <CustomTabPanel value={taps} index={0}>
+            <CustomTabPanel
+              value={taps}
+              index={0}
+              disabled={!permissions.enabledClients}
+            >
               <ReportClients />
             </CustomTabPanel>
-            <CustomTabPanel value={taps} index={1}>
+            <CustomTabPanel
+              value={taps}
+              index={1}
+              disabled={!permissions.enabledOperations}
+            >
               <ReportOperaciones />
             </CustomTabPanel>
           </Box>

@@ -17,7 +17,7 @@ import logo from "../../app/assets/image/2logonet.png";
 import Image from "next/image";
 import { format } from "date-fns";
 import CustomCard from "./customCard";
-import { getSession } from "@/app/helpers/session";
+import { findAccion, getSession } from "@/app/helpers/session";
 
 interface OperacionesTable {
   data: Array<{
@@ -39,6 +39,9 @@ interface OperacionesTable {
 }
 
 export default function ReportOperaciones(props: any) {
+  const [permissions, setPermissions] = useState({
+    exportOpPerUser: false
+  })
   const [fechaInicioOperaciones, setFechaInicioOperaciones] = useState<Date>(
     new Date()
   );
@@ -184,6 +187,28 @@ export default function ReportOperaciones(props: any) {
     }));
   };
 
+
+  const checkPermissions = async () => {
+
+    const [resultReportOpPerUser] = await Promise.all([
+      axiosInstance.get(`acciones/usuario/${getSession().loginUsuario}/pagina/${4}`)
+    ])
+
+    const dataResultReportOpPerUser: Array<{codAccion: string, nombreAccion: string}> = resultReportOpPerUser.data;
+
+
+    setPermissions({
+      exportOpPerUser: findAccion('Exportar', dataResultReportOpPerUser) 
+    })
+  }
+
+
+  useEffect(() => {
+    checkPermissions()  
+  }, [])
+
+
+
   return (
     <>
       <Grid container spacing={2}>
@@ -227,7 +252,7 @@ export default function ReportOperaciones(props: any) {
               >
                 <MenuItem>Ninguno</MenuItem>
                 {tipoModificacion.options.map((estado) => (
-                  <MenuItem value={estado.id}>
+                  <MenuItem key={estado.id} value={estado.id}>
                     <em>{estado.label}</em>
                   </MenuItem>
                 ))}
@@ -251,7 +276,7 @@ export default function ReportOperaciones(props: any) {
                 onChange={handleTipoClienteSelect}
               >
                 {tipoCliente.options.map((item) => (
-                  <MenuItem value={item.id}>{item.label}</MenuItem>
+                  <MenuItem key={item.id} value={item.id}>{item.label}</MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -557,6 +582,7 @@ export default function ReportOperaciones(props: any) {
               compression: true,
             });
           },
+          disabled: !permissions.exportOpPerUser
         }}
       >
         <div style={{ padding: "15px" }}>

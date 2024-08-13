@@ -100,14 +100,13 @@ export default function CustomizedDialogs(props: any) {
               <Select
                 style={{ background: "white" }}
                 labelId="demo-simple-select-label"
-                id="demo-simple-select"
                 value={tipoCliente.value}
                 name="tipoCliente"
                 onChange={handleTipoClienteelect}
               >
                 <MenuItem>Ninguno</MenuItem>
                 {tipoCliente.options.map((item) => (
-                  <MenuItem value={item.id}>{item.label}</MenuItem>
+                  <MenuItem value={item.id} key={item.id}>{item.label}</MenuItem>
                 ))}
               </Select>
             </FormControl>

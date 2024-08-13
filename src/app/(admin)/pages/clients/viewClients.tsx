@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Paper from "@mui/material/Paper";
@@ -16,51 +16,9 @@ import EmailIcon from "@mui/icons-material/Email";
 import ToggleOnIcon from "@mui/icons-material/ToggleOn";
 import Tooltip from "@mui/material/Tooltip";
 import { CustomTable } from "@/app/components/materialTable";
-import { tree } from "next/dist/build/templates/app-page";
 import { axiosInstance } from "@/app/helpers/axiosConfig";
+import { findAccion, getSession } from "@/app/helpers/session";
 
-interface Data {
-  id: number;
-  abonado: number;
-  name: string;
-  correoElectronico: string;
-  tipoCliente: string;
-  documento: string;
-  fechaRegistro: string;
-  fechaActivacion: string;
-  status: string;
-  telefono: number;
-  protein: React.ReactNode;
-}
-
-function createData(
-  id: number,
-  abonado: number,
-  name: string,
-  correoElectronico: string,
-  tipoCliente: string,
-  documento: string,
-  fechaRegistro: string,
-  fechaActivacion: string,
-  status: string,
-  telefono: number,
-  protein: React.ReactNode
-): Data {
-  return {
-    id,
-    abonado,
-    name,
-    correoElectronico,
-    tipoCliente,
-    documento,
-    fechaRegistro,
-    fechaActivacion,
-    status,
-    telefono,
-
-    protein,
-  };
-}
 
 export default function viewClients(props: any) {
   const [email, setEmail] = useState({
@@ -72,6 +30,12 @@ export default function viewClients(props: any) {
     active: false,
     client: {},
   });
+
+  const [permissions, setPermissions ] = useState({
+    resetPassword: false,
+    changeEmail: false, 
+    changeStatus: false
+  })
 
   const handleClickOpenEmail = (client: string) => {
     setEmail({ active: true, client });
@@ -106,7 +70,6 @@ export default function viewClients(props: any) {
         const results = await axiosInstance.put(
           `clientes/resetearclave/${documento}`
         );
-        console.log(results);
 
         Swal.fire({
           title: "Completado",
@@ -128,6 +91,25 @@ export default function viewClients(props: any) {
     });
   };
 
+  
+
+  const checkPermissions = async () => {
+    const result = await axiosInstance.get(`acciones/usuario/${getSession().loginUsuario}/pagina/${2}`);
+    
+    const data: Array<{codAccion: string, nombreAccion: string}> = result.data;
+
+
+    setPermissions({
+      resetPassword: findAccion('Resetear Clave', data),
+      changeEmail: findAccion('Modificar Correo', data), 
+      changeStatus: findAccion('Modificar Estatus', data), 
+    })
+  }
+
+
+  useEffect(() => {
+    checkPermissions()  
+  }, [])
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -153,41 +135,48 @@ export default function viewClients(props: any) {
                     variant="contained"
                     aria-label="Basic button group"
                   >
-                    <Tooltip title="Editar Correo" placement="top-end">
+                    { permissions.changeEmail && <Tooltip title="Editar Correo" placement="top-end">
                       <Button onClick={() => handleClickOpenEmail(row)}>
                         <EmailIcon />
                       </Button>
-                    </Tooltip>
+                    </Tooltip> }
 
-                    <Tooltip title="Editar Estatus" placement="top-end">
+                    { permissions.changeStatus && <Tooltip title="Editar Estatus" placement="top-end">
                       <Button onClick={() => handleClickOpenStatus(row)}>
                         <ToggleOnIcon />
                       </Button>
-                    </Tooltip>
+                    </Tooltip> }
 
-                    <Tooltip title="Restablecer contraseña" placement="top-end">
+                    { permissions.resetPassword && <Tooltip title="Restablecer contraseña" placement="top-end">
                       <Button
                         onClick={() => handleResetPassword(row.documento)}
                       >
                         <LockIcon />
                       </Button>
-                    </Tooltip>
+                    </Tooltip> }
                   </ButtonGroup>
-                  ,
+                
                 </>
               ),
               title: "accion",
             },
           ]}
-          data={props.client?.data || []}
+          data={
+            props.client?.data
+              ? props.client.data.map((v: any, index: number) => ({
+                  id: v.codAbonado + index,
+                  ...v,
+                }))
+              : []
+          }
           pagination={{
-            count: (props.client?.totalUsers || 0),
+            count: props.client?.totalUsers || 0,
             page: (props.client?.page || 1) - 1,
             itemsPerPage: 10,
             onPageChange: (event, page) => {
               props.setSearchParams((prevState: any) => ({
                 ...prevState,
-                codPagina: page +1,
+                codPagina: page + 1,
               }));
             },
           }}

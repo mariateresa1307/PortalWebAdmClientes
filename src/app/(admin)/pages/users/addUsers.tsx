@@ -47,8 +47,7 @@ const initialState = {
 
 export default (props: any) => {
   const [state, setState] = useState(initialState.user);
-console.log(state, "user!!");
-
+  
   const [tipoUsuario, setTipoUsuario] = useState<{
     value: string;
     options: Array<{ label: String; id: string }>;
@@ -99,10 +98,22 @@ console.log(state, "user!!");
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const propertyName = e.target.name;
+    const propertyLastName = e.target.name;
+    const propertyNameUser = e.target.name;
     setState((ps) => ({
       ...ps,
       [propertyName]: {
         ...ps[propertyName as keyof typeof ps & string],
+        value: e.target.value,
+        error: false,
+      },
+     [propertyLastName]: {
+        ...ps[propertyLastName as keyof typeof ps & string],
+        value: e.target.value,
+        error: false,
+      },
+      [propertyNameUser]: {
+        ...ps[propertyNameUser as keyof typeof ps & string],
         value: e.target.value,
         error: false,
       },
@@ -182,7 +193,7 @@ console.log(state, "user!!");
         codEstatus: estatusUsuario.value,
         loginUsuario: state.loginUsuario.value,
       };
-      
+
       const response = await axiosInstance.post(`usuarios/`, payload);
       Swal.fire({
         title: "Usuario Guardado!",
@@ -202,7 +213,6 @@ console.log(state, "user!!");
         text: "Error al Guardar, usuario ya existe!",
       });
     }
-
   };
 
   const GetRoles = async () => {
@@ -281,11 +291,17 @@ console.log(state, "user!!");
             label=" Nombres "
             name={"nombre"}
             value={state.nombre.value}
-            onChange={handleChange}
+            onChange={(event) => {
+              if (!/^([A-Za-z\s])+$/.test(event.target.value)) {
+                return;
+              }
+
+              handleChange(event);
+            }}
             fullWidth
             variant="filled"
             required
-
+            type="text"
             error={state.nombre.error}
             helperText={state.nombre.error ? state.nombre.helperText : null}
           />
@@ -296,9 +312,16 @@ console.log(state, "user!!");
             label=" Apellidos"
             name={"apellido"}
             value={state.apellido.value}
-            onChange={handleChange}
             fullWidth
+            type="text"
             variant="filled"
+            onChange={(event) => {
+              if (!/^([A-Za-z\s])+$/.test(event.target.value)) {
+                return;
+              }
+
+              handleChange(event);
+            }}
             required
             error={state.apellido.error}
             helperText={state.apellido.error ? state.apellido.helperText : null}
@@ -357,8 +380,8 @@ console.log(state, "user!!");
               onChange={handleDepartamentoUsuarioSelect}
             >
               {departamentoUsuario.options.map((item) => (
-                <MenuItem value={item.id}>{item.label}</MenuItem>
-              ))}
+                <MenuItem  key ={item.id} value={item.id}>{item.label}</MenuItem>
+              ))} 
             </Select>
             {departamentoUsuario.error && (
               <FormHelperText>{departamentoUsuario.helperText}</FormHelperText>
@@ -382,7 +405,7 @@ console.log(state, "user!!");
               onChange={handleRolUsuarioSelect}
             >
               {rolUsuario.options.map((item) => (
-                <MenuItem value={item.id}>{item.label}</MenuItem>
+                <MenuItem key={item.id} value={item.id}>{item.label}</MenuItem>
               ))}
             </Select>
             {rolUsuario.error && (
@@ -407,7 +430,7 @@ console.log(state, "user!!");
               onChange={handleStatusUsuarioSelect}
             >
               {estatusUsuario.options.map((item) => (
-                <MenuItem value={item.id}>{item.label}</MenuItem>
+                <MenuItem  key={item.id} value={item.id}>{item.label}</MenuItem>
               ))}
             </Select>
             {estatusUsuario.error && (
@@ -453,7 +476,7 @@ console.log(state, "user!!");
               onChange={handleTipoUsuarioSelect}
             >
               {tipoUsuario.options.map((item) => (
-                <MenuItem value={item.id}>{item.label}</MenuItem>
+                <MenuItem key={item.id} value={item.id}>{item.label}</MenuItem>
               ))}
             </Select>
             {tipoUsuario.error && (
@@ -467,10 +490,18 @@ console.log(state, "user!!");
             name={"loginUsuario"}
             label="Nombre Usuario"
             value={state.loginUsuario.value}
-            onChange={handleChange}
+          
+            onChange={(event) => {
+              if (!/^([A-Za-z\s])+$/.test(event.target.value)) {
+                return;
+              }
+
+              handleChange(event);
+            }}
             fullWidth
             variant="filled"
             required
+            type="text"
             error={state.loginUsuario.error}
             helperText={
               state.loginUsuario.error ? state.loginUsuario.helperText : null

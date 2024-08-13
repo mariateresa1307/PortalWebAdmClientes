@@ -156,16 +156,14 @@ export default function CustomizedDialogs(props: any) {
                 </InputLabel>
                 <Select
                   style={{ background: "white" }}
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label="Age"
+                  label="Departamento"
                   value={departamentoUsuario.value}
                   name="departamento"
                   onChange={handleDepartamentoUsuarioSelect}
                 >
                   <MenuItem>Ninguno</MenuItem>
                   {departamentoUsuario.options.map((item) => (
-                    <MenuItem value={item.id}>{item.label}</MenuItem>
+                    <MenuItem key={item.id} value={item.id}>{item.label}</MenuItem>
                   ))}
                 </Select>
                 {departamentoUsuario.error && (
@@ -189,7 +187,7 @@ export default function CustomizedDialogs(props: any) {
                 >
                   <MenuItem>Ninguno</MenuItem>
                   {estatusUsuario.options.map((item) => (
-                    <MenuItem value={item.id}>{item.label}</MenuItem>
+                    <MenuItem key={item.id} value={item.id}>{item.label}</MenuItem>
                   ))}
                 </Select>
                 {estatusUsuario.error && (
@@ -213,7 +211,7 @@ export default function CustomizedDialogs(props: any) {
                 >
                   <MenuItem>Ninguno</MenuItem>
                   {tipoUsuario.options.map((item) => (
-                    <MenuItem value={item.id}>{item.label}</MenuItem>
+                    <MenuItem key={item.id} value={item.id}>{item.label}</MenuItem>
                   ))}
                 </Select>
                 {tipoUsuario.error && (

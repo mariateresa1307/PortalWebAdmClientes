@@ -218,13 +218,21 @@ export default (props: any) => {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const propertyName: string = e.target.name;
+    const propertyLastName = e.target.name;
+   
     setUser((ps) => ({
       ...ps,
       [propertyName]: {
-        ...ps[propertyName ],
+        ...ps[propertyName as keyof typeof ps & string ],
         value: e.target.value,
         error: false,
       },
+      [propertyLastName]: {
+        ...ps[propertyLastName as keyof typeof ps & string ],
+        value: e.target.value,
+        error: false,
+      },
+      
     }));
   };
 
@@ -288,8 +296,15 @@ export default (props: any) => {
             label="Nombres "
             fullWidth
             variant="filled"
+            onChange={(event) => {
+              if (!/^([A-Za-z\s])+$/.test(event.target.value)) {
+                return;
+              }
+
+              handleChange(event);
+            }}
             value={user.nombre.value}
-            onChange={handleChange}
+           
           />
         </Grid>
 
@@ -300,7 +315,13 @@ export default (props: any) => {
             fullWidth
             variant="filled"
             value={user.apellido.value}
-            onChange={handleChange}
+            onChange={(event) => {
+              if (!/^([A-Za-z\s])+$/.test(event.target.value)) {
+                return;
+              }
+
+              handleChange(event);
+            }}
           />
         </Grid>
 
@@ -349,7 +370,7 @@ export default (props: any) => {
               onChange={handleDepartamentoUsuarioSelect}
             >
               {departamentoUsuario.options.map((item) => (
-                <MenuItem value={item.id}>{item.label}</MenuItem>
+                <MenuItem key={item.id} value={item.id}>{item.label}</MenuItem>
               ))}
             </Select>
             {departamentoUsuario.error && (
@@ -369,7 +390,7 @@ export default (props: any) => {
               onChange={handleRolUsuarioSelect}
             >
               {rolUsuario.options.map((item) => (
-                <MenuItem value={item.id}>{item.label}</MenuItem>
+                <MenuItem key={item.id} value={item.id}>{item.label}</MenuItem>
               ))}
             </Select>
             {rolUsuario.error && (
@@ -389,7 +410,7 @@ export default (props: any) => {
               onChange={handleStatusUsuarioSelect}
             >
               {estatusUsuario.options.map((item) => (
-                <MenuItem value={item.id}>{item.label}</MenuItem>
+                <MenuItem key={item.id} value={item.id}>{item.label}</MenuItem>
               ))}
             </Select>
             {estatusUsuario.error && (
@@ -430,7 +451,7 @@ export default (props: any) => {
               name="tipoUsuario"
             >
               {tipoUsuario.options.map((item) => (
-                <MenuItem value={item.id}>{item.label}</MenuItem>
+                <MenuItem key={item.id} value={item.id}>{item.label}</MenuItem>
               ))}
             </Select>
             {tipoUsuario.error && (
@@ -447,7 +468,6 @@ export default (props: any) => {
             disabled
             variant="filled"
             value={user.loginUsuario.value}
-            onChange={handleChange}
           />
         </Grid>
       </Grid>

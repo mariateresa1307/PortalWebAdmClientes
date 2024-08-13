@@ -20,6 +20,7 @@ import { axiosInstance } from "@/app/helpers/axiosConfig";
 import { AxiosRequestConfig } from "axios";
 import { useRouter } from 'next/navigation'
 import Swal from "sweetalert2";
+import { AvailablePagesMap } from "@/app/helpers/availablePages";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -44,7 +45,16 @@ export default function Login() {
       const response = await axiosInstance.get('auth/login', config);
       const session = response.data[0];
       localStorage.setItem('ntu-session', JSON.stringify(session));
-      router.push('pages/home');
+      
+      
+      // Get pages
+      const availablePages = await axiosInstance.get(`paginas/usuario/${session.loginUsuario}`);  
+      localStorage.setItem('ntu-availablePages', JSON.stringify(availablePages.data))
+     
+
+
+      const homePage = AvailablePagesMap[availablePages.data[0].nombrePagina]
+      router.push(`pages${homePage}`);
 
     } catch (error) {
     
