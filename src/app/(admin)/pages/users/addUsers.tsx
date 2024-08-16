@@ -103,7 +103,7 @@ export default (props: any) => {
     setState((ps) => ({
       ...ps,
       [propertyName]: {
-        ...ps[propertyName as keyof typeof ps & string],
+        ...ps[propertyName  as keyof typeof ps & string],
         value: e.target.value,
         error: false,
       },
@@ -289,11 +289,12 @@ export default (props: any) => {
             name={"nombre"}
             value={state.nombre.value}
             onChange={(event) => {
-              if (!/^([A-Za-z\s])+$/.test(event.target.value)) {
+              const inputEvent = event as ChangeEvent<HTMLInputElement>;
+              if (!/^([A-Za-z\s]*)$/.test(inputEvent.target.value)) {
                 return;
               }
 
-              handleChange(event);
+              handleChange(inputEvent);
             }}
             fullWidth
             variant="filled"
@@ -313,11 +314,14 @@ export default (props: any) => {
             type="text"
             variant="filled"
             onChange={(event) => {
-              if (!/^([A-Za-z\s])+$/.test(event.target.value)) {
+              const inputEvent = event as ChangeEvent<HTMLInputElement>;
+              if (!/^([A-Za-z\s]*)$/.test(event.target.value)) {
+
+               
                 return;
               }
 
-              handleChange(event);
+              handleChange(inputEvent);
             }}
             required
             error={state.apellido.error}
@@ -489,11 +493,12 @@ export default (props: any) => {
             value={state.loginUsuario.value}
           
             onChange={(event) => {
-              if (!/^([A-Za-z\s])+$/.test(event.target.value)) {
+              const inputEvent = event as ChangeEvent<HTMLInputElement>;
+              if (!/^([A-Za-z\s]*)$/.test(inputEvent.target.value)) {
                 return;
               }
 
-              handleChange(event);
+              handleChange(inputEvent);
             }}
             fullWidth
             variant="filled"

@@ -123,6 +123,35 @@ export default function CustomizedDialogs(props: any) {
     });
   };
 
+
+  useEffect(() => {
+    if(props.searchParams.codPagina === 1 &&
+      props.searchParams.codDepartamento === undefined &&
+      props.searchParams.codEstatus === undefined &&
+      props.searchParams.codTipo === undefined && 
+      props.searchParams.nombreUsuario === undefined
+      ) {
+
+
+        setTipoUsuario((ps) => ({
+          ...ps,
+          value: ""
+        }));
+        setDepartamentoUsuario((ps) => ({
+          ...ps,
+          value: ""
+        }));
+        setEstatusUsuario((ps) => ({
+          ...ps,
+          value: ""
+        }));
+
+
+        setSearch("")
+
+    }
+  }, [props.searchParams])
+
   return (
     <div
       style={{
@@ -161,7 +190,7 @@ export default function CustomizedDialogs(props: any) {
                   name="departamento"
                   onChange={handleDepartamentoUsuarioSelect}
                 >
-                  <MenuItem>Ninguno</MenuItem>
+                  <MenuItem value="">Ninguno</MenuItem>
                   {departamentoUsuario.options.map((item) => (
                     <MenuItem key={item.id} value={item.id}>{item.label}</MenuItem>
                   ))}
@@ -185,7 +214,7 @@ export default function CustomizedDialogs(props: any) {
                   name="status"
                   onChange={handleStatusUsuarioSelect}
                 >
-                  <MenuItem>Ninguno</MenuItem>
+                  <MenuItem value="">Ninguno</MenuItem>
                   {estatusUsuario.options.map((item) => (
                     <MenuItem key={item.id} value={item.id}>{item.label}</MenuItem>
                   ))}
@@ -209,7 +238,7 @@ export default function CustomizedDialogs(props: any) {
                   name="tipoUsuario"
                   onChange={handleTipoUsuarioSelect}
                 >
-                  <MenuItem>Ninguno</MenuItem>
+                  <MenuItem value="">Ninguno</MenuItem>
                   {tipoUsuario.options.map((item) => (
                     <MenuItem key={item.id} value={item.id}>{item.label}</MenuItem>
                   ))}

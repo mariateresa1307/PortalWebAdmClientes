@@ -37,7 +37,7 @@ export const ClientsBody = () => {
   const [searchParams, setSearchParams] = useState({
     loginUsuario: getSession().loginUsuario,
     codPagina: 1,
-    tipoCliente: undefined,
+    tipoCliente: 3,
     documento: undefined,
   });
   const getClientList = async () => {
@@ -104,7 +104,7 @@ export const ClientsBody = () => {
         </Grid>
 
         <Grid item lg={11} md={11}>
-          <ViewClients client={client} setSearchParams={setSearchParams} />
+          <ViewClients client={client} setSearchParams={setSearchParams} searchParams={searchParams} />
         </Grid>
       </Grid>
     </>

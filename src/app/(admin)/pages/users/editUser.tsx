@@ -297,7 +297,7 @@ export default (props: any) => {
             fullWidth
             variant="filled"
             onChange={(event) => {
-              if (!/^([A-Za-z\s])+$/.test(event.target.value)) {
+              if (!/^([A-Za-z\s]*)$/.test(event.target.value)) {
                 return;
               }
 
@@ -316,7 +316,7 @@ export default (props: any) => {
             variant="filled"
             value={user.apellido.value}
             onChange={(event) => {
-              if (!/^([A-Za-z\s])+$/.test(event.target.value)) {
+              if (!/^([A-Za-z\s]*)$/.test(event.target.value)) {
                 return;
               }
 

@@ -266,7 +266,7 @@ export default function viewUser() {
         <Grid item lg={11} md={11} style={{}}>
           <Box sx={{ width: "100%" }}>
             <Paper sx={{ width: "100%", mb: 2 }}>
-              <SearchSeccion setSearchParams={setSearchParams} />
+              <SearchSeccion setSearchParams={setSearchParams} searchParams={searchParams} />
               <CustomTable
                 columns={[
                   { field: "nombre", title: "Nombre" },

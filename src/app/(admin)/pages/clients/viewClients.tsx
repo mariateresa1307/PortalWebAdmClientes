@@ -51,7 +51,7 @@ export default function viewClients(props: any) {
     props.setSearchParams((prevState: any) => ({
       ...prevState,
       codPagina: 1,
-      tipoCliente: undefined,
+      tipoCliente: 3,
       documento: undefined,
     }));
   };
@@ -133,7 +133,7 @@ export default function viewClients(props: any) {
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <SearchSeccion setSearchParams={props.setSearchParams} />
+        <SearchSeccion setSearchParams={props.setSearchParams} searchParams={props.searchParams} />
 
         <CustomTable
           columns={[

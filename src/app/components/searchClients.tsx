@@ -54,6 +54,26 @@ export default function CustomizedDialogs(props: any) {
     GetDominios();
   }, []);
 
+
+  useEffect(( ) => {
+    if(
+      props.searchParams.codPagina === 1 &&
+      props.searchParams.tipoCliente === 3 &&
+      props.searchParams.documento === undefined
+    ) {
+
+      setTipoCliente((prevState) => ({
+        ...prevState,
+        value: "3"
+      }));
+
+      setSearch("")
+
+    }
+
+  }, [props.searchParams])
+
+
   const handleTipoClienteelect = (e: SelectChangeEvent<string>) => {
     setTipoCliente((prevState) => ({
       ...prevState,

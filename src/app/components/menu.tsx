@@ -21,8 +21,10 @@ import PeopleIcon from "@mui/icons-material/People";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import TextSnippetIcon from "@mui/icons-material/TextSnippet";
 import MyProfile from "./profile";
-import {  hasAvailablePage } from "../helpers/availablePages";
+import { hasAvailablePage } from "../helpers/availablePages";
 import { useState } from "react";
+import { Grid } from "@mui/material";
+import { getSession } from "@/app/helpers/session";
 
 const drawerWidth = 240;
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
@@ -80,6 +82,7 @@ export default function PersistentDrawerLeft({ children }: DrawerLeftProps) {
   const theme = useTheme();
   const [open, setOpen] = useState(true);
   const [MenuItemsState, setMenuItems] = useState(<> </>);
+  const [login, setLogin] = useState("");
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -89,7 +92,9 @@ export default function PersistentDrawerLeft({ children }: DrawerLeftProps) {
     setOpen(false);
   };
 
-
+  React.useEffect(() => {
+    setLogin(getSession().loginUsuario);
+  }, []);
 
   React.useEffect(() => {
     setMenuItems(
@@ -140,6 +145,26 @@ export default function PersistentDrawerLeft({ children }: DrawerLeftProps) {
           >
             <MenuIcon />
           </IconButton>
+
+          <Grid container spacing={2} style={{ marginRight: 70, marginTop: 0 }}>
+            <Grid xs={8}>
+              <Typography
+                variant="h6"
+                noWrap
+                component="div"
+                style={{ color: "white", marginRight: "38px", paddingLeft:"34px" }}
+              >
+                Administración de Usuarios
+              </Typography>
+            </Grid>
+            <Grid xs={4} style={{ textAlign: "right" }}>
+              <Typography style={{ fontWeight: "bold", marginTop: 5 }}>
+                {" "}
+                {login}
+              </Typography>
+            </Grid>
+          </Grid>
+
         </Toolbar>
       </AppBar>
       <Drawer
