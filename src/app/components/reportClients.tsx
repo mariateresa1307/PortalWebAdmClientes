@@ -8,7 +8,7 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Box from "@mui/material/Box";
 import { format } from "date-fns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import {  Divider } from "@mui/material";
+import { Divider } from "@mui/material";
 import CustomModal from "../components/modalAdd";
 import { useEffect, useState, useCallback } from "react";
 import { axiosInstance } from "../helpers/axiosConfig";
@@ -44,19 +44,20 @@ interface ClientTable {
 
 export default function ReportClients(props: any) {
   const [permissions, setPermissions] = useState({
-    exportClients: false
-  })
-  const [fechaInicioRegistro, setFechaInicioRegistro] = useState<Date>(
-    new Date()
+    exportClients: false,
+  });
+  const [fechaInicioRegistro, setFechaInicioRegistro] = useState<Date | null>(
+    null
   );
-  const [fechaFinRegistro, setFechaFinRegistro] = useState<Date>(new Date());
-  const [fechaInicioActivacion, setFechaInicioActivacion] = useState<Date>(
-    new Date()
-  );
-  const [fechaFinActivacion, setFechaFinActivacion] = useState<Date>(
-    new Date()
+  const [fechaFinRegistro, setFechaFinRegistro] = useState<Date | null>(null);
+  const [fechaInicioActivacion, setFechaInicioActivacion] =
+    useState<null | Date>(null);
+  const [fechaFinActivacion, setFechaFinActivacion] = useState<Date | null>(
+    null
   );
   const [open, setOpen] = useState(false);
+
+  const [getPreview, setGetPreview] = useState<null | number>(null);
 
   const [searchParams, setSearchParams] = useState({
     loginUsuario: getSession().loginUsuario,
@@ -73,7 +74,7 @@ export default function ReportClients(props: any) {
     error: boolean;
     helperText: string;
   }>({
-    value: "1",
+    value: "3",
     options: [
       {
         id: "1",
@@ -115,6 +116,14 @@ export default function ReportClients(props: any) {
 
   const handleClose = () => {
     setOpen(false);
+
+
+    setSearchParams({
+      loginUsuario: getSession().loginUsuario,
+      codPagina: 1,
+      tipoCliente: undefined,
+      documento: undefined})
+    
   };
 
   const GetDominios = async () => {
@@ -145,10 +154,14 @@ export default function ReportClients(props: any) {
         params: {
           loginUsuario: searchParams.loginUsuario,
           codPagina: searchParams.codPagina,
-          fIniRegistro: format(fechaInicioRegistro, "yyyy-MM-dd"),
-          fFinRegistro: format(fechaFinRegistro, "yyyy-MM-dd"),
-          fIniActivacion: format(fechaInicioActivacion, "yyyy-MM-dd"),
-          fFinActivacion: format(fechaFinActivacion, "yyyy-MM-dd"),
+          fIniRegistro: fechaInicioRegistro ? format(fechaInicioRegistro, "yyyy-MM-dd") : undefined,
+          fFinRegistro:  fechaFinRegistro ? format(fechaFinRegistro, "yyyy-MM-dd") : undefined,
+          fIniActivacion: fechaInicioActivacion
+            ? format(fechaInicioActivacion, "yyyy-MM-dd")
+            : undefined,
+          fFinActivacion: fechaFinActivacion
+            ? format(fechaFinActivacion, "yyyy-MM-dd")
+            : undefined,
           tipoCliente: tipoCliente.value,
           codEstatus: estatus.value,
         },
@@ -165,8 +178,10 @@ export default function ReportClients(props: any) {
   }, []);
 
   useEffect(() => {
-    getClientReport();
-  }, [searchParams]);
+    if (getPreview) {
+      getClientReport();
+    }
+  }, [searchParams, getPreview]);
 
   const handleTipoClienteelect = (e: SelectChangeEvent<string>) => {
     setTipoCliente((prevState) => ({
@@ -184,30 +199,26 @@ export default function ReportClients(props: any) {
     }));
   };
 
-
-
   const checkPermissions = async () => {
-
     const [resultReportClients] = await Promise.all([
-      axiosInstance.get(`acciones/usuario/${getSession().loginUsuario}/pagina/${3}`),
-      
-    ])
+      axiosInstance.get(
+        `acciones/usuario/${getSession().loginUsuario}/pagina/${3}`
+      ),
+    ]);
 
-    const dataResultReportClients: Array<{codAccion: string, nombreAccion: string}> = resultReportClients.data;
-    
-
+    const dataResultReportClients: Array<{
+      codAccion: string;
+      nombreAccion: string;
+    }> = resultReportClients.data;
 
     setPermissions({
-      exportClients: findAccion('Exportar', dataResultReportClients),
-    })
-  }
-
+      exportClients: findAccion("Exportar", dataResultReportClients),
+    });
+  };
 
   useEffect(() => {
-    checkPermissions()  
-  }, [])
-
-
+    checkPermissions();
+  }, []);
 
   return (
     <>
@@ -274,9 +285,10 @@ export default function ReportClients(props: any) {
                 name="tipoCliente"
                 onChange={handleTipoClienteelect}
               >
-                <MenuItem>Ninguno</MenuItem>
                 {tipoCliente.options.map((item) => (
-                  <MenuItem key={item.id} value={item.id}>{item.label}</MenuItem>
+                  <MenuItem key={item.id} value={item.id}>
+                    {item.label}
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -296,7 +308,7 @@ export default function ReportClients(props: any) {
               >
                 <MenuItem>Ninguno</MenuItem>
                 {estatus.options.map((estado) => (
-                  <MenuItem  key={estado.id} value={estado.id}>
+                  <MenuItem key={estado.id} value={estado.id}>
                     <em>{estado.label}</em>
                   </MenuItem>
                 ))}
@@ -312,6 +324,7 @@ export default function ReportClients(props: any) {
               setSearchParams((ps) => ({
                 ...ps,
               }));
+              setGetPreview(new Date().getSeconds());
               setOpen(true);
             }}
           >
@@ -332,10 +345,10 @@ export default function ReportClients(props: any) {
               {
                 params: {
                   loginUsuario: searchParams.loginUsuario,
-                  fIniRegistro: format(fechaInicioRegistro, "yyyy-MM-dd"),
-                  fFinRegistro: format(fechaFinRegistro, "yyyy-MM-dd"),
-                  fIniActivacion: format(fechaInicioActivacion, "yyyy-MM-dd"),
-                  fFinActivacion: format(fechaFinActivacion, "yyyy-MM-dd"),
+                  fIniRegistro: fechaInicioRegistro? format(fechaInicioRegistro, "yyyy-MM-dd") : undefined,
+                  fFinRegistro: fechaFinRegistro ? format(fechaFinRegistro, "yyyy-MM-dd") : undefined,
+                  fIniActivacion: fechaInicioActivacion ? format(fechaInicioActivacion, "yyyy-MM-dd") : undefined,
+                  fFinActivacion: fechaFinActivacion ? format(fechaFinActivacion, "yyyy-MM-dd") : undefined,
                   tipoCliente: tipoCliente.value,
                   codEstatus: estatus.value,
                 },
@@ -388,7 +401,7 @@ export default function ReportClients(props: any) {
                   t: "s",
                   s: {
                     fill: { fgColor: { rgb: "071c67)" } },
-                    font: { bold: true, sz: 15 },
+                    font: { bold: true, sz: 15  ,color:{rgb:"FFFFFF"}},
                     alignment: { horizontal: "right" },
                   },
                 },
@@ -397,7 +410,7 @@ export default function ReportClients(props: any) {
                   t: "s",
                   s: {
                     fill: { fgColor: { rgb: "071c67)" } },
-                    font: { bold: true, sz: 15 },
+                    font: { bold: true, sz: 15 , color:{rgb:"FFFFFF"}},
                     alignment: { wrapText: true },
                   },
                 },
@@ -445,7 +458,7 @@ export default function ReportClients(props: any) {
                   t: "s",
                   s: {
                     fill: { fgColor: { rgb: "6783e4)" } },
-                    font: { bold: true, sz: 12 },
+                    font: { bold: true, sz: 12, color:{rgb:"FFFFFF"} },
                     alignment: { wrapText: true, horizontal: "center" },
                   },
                 },
@@ -454,7 +467,7 @@ export default function ReportClients(props: any) {
                   t: "s",
                   s: {
                     fill: { fgColor: { rgb: "6783e4" } },
-                    font: { bold: true, sz: 12 },
+                    font: { bold: true, sz: 12, color:{rgb:"FFFFFF"} },
                     alignment: { wrapText: true, horizontal: "center" },
                   },
                 },
@@ -463,7 +476,7 @@ export default function ReportClients(props: any) {
                   t: "s",
                   s: {
                     fill: { fgColor: { rgb: "6783e4" } },
-                    font: { bold: true, sz: 12 },
+                    font: { bold: true, sz: 12 , color:{rgb:"FFFFFF"}},
                     alignment: { wrapText: true, horizontal: "center" },
                   },
                 },
@@ -472,7 +485,7 @@ export default function ReportClients(props: any) {
                   t: "s",
                   s: {
                     fill: { fgColor: { rgb: "6783e4" } },
-                    font: { bold: true, sz: 12 },
+                    font: { bold: true, sz: 12, color:{rgb:"FFFFFF"} },
                     alignment: { wrapText: true, horizontal: "center" },
                   },
                 },
@@ -481,7 +494,7 @@ export default function ReportClients(props: any) {
                   t: "s",
                   s: {
                     fill: { fgColor: { rgb: "6783e4" } },
-                    font: { bold: true, sz: 12 },
+                    font: { bold: true, sz: 12, color:{rgb:"FFFFFF"} },
                     alignment: { wrapText: true, horizontal: "center" },
                   },
                 },
@@ -542,7 +555,7 @@ export default function ReportClients(props: any) {
                     t: "s",
                     s: {
                       fill: { fgColor: { rgb: "6783e4" } },
-                      font: { bold: true, sz: 12 },
+                      font: { bold: true, sz: 12, color:{rgb:"FFFFFF"} },
                       alignment: { wrapText: true, horizontal: "center" },
                     },
                   },
@@ -551,7 +564,7 @@ export default function ReportClients(props: any) {
                     t: "s",
                     s: {
                       fill: { fgColor: { rgb: "6783e4" } },
-                      font: { bold: true, sz: 12 },
+                      font: { bold: true, sz: 12, color:{rgb:"FFFFFF"} },
                       alignment: { wrapText: true, horizontal: "center" },
                     },
                   },
@@ -560,7 +573,7 @@ export default function ReportClients(props: any) {
                     t: "s",
                     s: {
                       fill: { fgColor: { rgb: "6783e4" } },
-                      font: { bold: true, sz: 12 },
+                      font: { bold: true, sz: 12, color:{rgb:"FFFFFF"} },
                       alignment: { wrapText: true, horizontal: "center" },
                     },
                   },
@@ -569,7 +582,7 @@ export default function ReportClients(props: any) {
                     t: "s",
                     s: {
                       fill: { fgColor: { rgb: "6783e4" } },
-                      font: { bold: true, sz: 12 },
+                      font: { bold: true, sz: 12, color:{rgb:"FFFFFF"} },
                       alignment: { wrapText: true, horizontal: "center" },
                     },
                   },
@@ -578,7 +591,7 @@ export default function ReportClients(props: any) {
                     t: "s",
                     s: {
                       fill: { fgColor: { rgb: "6783e4" } },
-                      font: { bold: true, sz: 12 },
+                      font: { bold: true, sz: 12 , color:{rgb:"FFFFFF"}},
                       alignment: { wrapText: true, horizontal: "center" },
                     },
                   },
@@ -587,7 +600,7 @@ export default function ReportClients(props: any) {
                     t: "s",
                     s: {
                       fill: { fgColor: { rgb: "6783e4" } },
-                      font: { bold: true, sz: 12 },
+                      font: { bold: true, sz: 12 , color:{rgb:"FFFFFF"}},
                       alignment: { wrapText: true, horizontal: "center" },
                     },
                   },
@@ -596,7 +609,7 @@ export default function ReportClients(props: any) {
                     t: "s",
                     s: {
                       fill: { fgColor: { rgb: "6783e4" } },
-                      font: { bold: true, sz: 12 },
+                      font: { bold: true, sz: 12, color:{rgb:"FFFFFF"} },
                       alignment: { wrapText: true, horizontal: "center" },
                     },
                   },
@@ -605,7 +618,7 @@ export default function ReportClients(props: any) {
                     t: "s",
                     s: {
                       fill: { fgColor: { rgb: "6783e4" } },
-                      font: { bold: true, sz: 12 },
+                      font: { bold: true, sz: 12 , color:{rgb:"FFFFFF"}},
                       alignment: { wrapText: true, horizontal: "center" },
                     },
                   },
@@ -614,13 +627,12 @@ export default function ReportClients(props: any) {
                     t: "s",
                     s: {
                       fill: { fgColor: { rgb: "6783e4" } },
-                      font: { bold: true, sz: 12 },
+                      font: { bold: true, sz: 12, color:{rgb:"FFFFFF"} },
                       alignment: { wrapText: true, horizontal: "center" },
                     },
                   },
                 ],
-                // ----------------------------------
-
+               
                 ...result.data.data.map((row: { [x: string]: any }) =>
                   Object.keys(row).map((column) => ({
                     v: row[column],
@@ -646,7 +658,7 @@ export default function ReportClients(props: any) {
               compression: true,
             });
           },
-          disabled: !permissions.exportClients
+          disabled: !permissions.exportClients,
         }}
       >
         <div style={{ padding: "15px" }}>

@@ -20,7 +20,7 @@ export default function CustomizedDialogs(props: any) {
     error: boolean;
     helperText: string;
   }>({
-    value: "",
+    value: "3",
     options: [],
     error: false,
     helperText: "Seleccionar campo",
@@ -104,7 +104,7 @@ export default function CustomizedDialogs(props: any) {
                 name="tipoCliente"
                 onChange={handleTipoClienteelect}
               >
-                <MenuItem>Ninguno</MenuItem>
+               
                 {tipoCliente.options.map((item) => (
                   <MenuItem value={item.id} key={item.id}>{item.label}</MenuItem>
                 ))}

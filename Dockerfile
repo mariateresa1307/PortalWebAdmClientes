@@ -6,6 +6,6 @@ RUN npm run build
 
 
 FROM nginx:alpine
-COPY --from=build /app/out /usr/share/nginx/html
+COPY --from=build /app/webAdm /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

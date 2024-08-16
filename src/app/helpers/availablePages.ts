@@ -5,6 +5,7 @@ export const AvailablePagesMap = {
   Clientes: "/clients",
   "Rep Clientes": "/reports",
   "Rep Operaciones x Usuario": "/reports",
+  changePassword: "/users/restorePassword/"
 };
 
 export const hasAvailablePage = (page: string) => {

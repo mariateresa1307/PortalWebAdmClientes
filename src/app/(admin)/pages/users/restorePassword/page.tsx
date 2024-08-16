@@ -55,11 +55,8 @@ export default function RestorePassword(props: any) {
         }
       });
     } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Contraseña anterior invalida!",
-      });
+     console.log(error);
+     
     }
   };
 

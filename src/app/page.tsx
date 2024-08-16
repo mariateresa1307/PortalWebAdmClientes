@@ -3,6 +3,12 @@ import styles from "../app/assets/css/page.module.css";
 import Login from "./(login)/pages/login/page";
 import Grid from "@mui/material/Grid";
 import  "./assets/css/page.login.css";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Adm login',
+  description: 'Admin website',
+};
 
 export default function Home() {
   return (

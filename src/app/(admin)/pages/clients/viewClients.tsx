@@ -66,19 +66,38 @@ export default function viewClients(props: any) {
       cancelButtonColor: "#d33",
       confirmButtonText: "Ok!",
     }).then(async (result) => {
-      if (result.isConfirmed) {
-        const results = await axiosInstance.put(
-          `clientes/resetearclave/${documento}`
-        );
 
-        Swal.fire({
-          title: "Completado",
-          text: "Contraseña Restablecida",
-          icon: "success",
-        });
+
+      try {
+        const session = JSON.parse(localStorage.getItem("ntu-session") || "{}");3
+        console.log(session, "session");
+     
+        const payload = {
+          loginUsuario: session.loginUsuario,
+        };
+       
+       // await axiosInstance.put(`clientes/resetearclave/${documento}`, payload );
+    
+       if (result.isConfirmed) {
+        const result=  await axiosInstance.put(`clientes/resetearclave/${documento}`, payload );
+        console.log(result);
+        
+         Swal.fire({
+           title: "Completado",
+           text: "Contraseña Restablecida",
+           icon: "success",
+         });
+       }
+      }  catch{ console.error("eeror");
       }
-    });
-  };
+
+      
+      
+
+
+
+      });
+    };
 
   const handleClose = () => {
     setEmail({

@@ -207,11 +207,8 @@ export default (props: any) => {
         setRolUsuario((ps) => ({ ...ps, value: "" }));
       });
     } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Error al Guardar, usuario ya existe!",
-      });
+      console.log(error);
+      
     }
   };
 

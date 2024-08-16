@@ -18,7 +18,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import { axiosInstance } from "@/app/helpers/axiosConfig";
 import { AxiosRequestConfig } from "axios";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { AvailablePagesMap } from "@/app/helpers/availablePages";
 
@@ -26,7 +26,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [state, setState] = useState({ user: "", password: "" });
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const router = useRouter()
+  const router = useRouter();
   const handleMouseDownPassword = (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
@@ -37,41 +37,42 @@ export default function Login() {
     try {
       const payload = {
         loginUsuario: state.user,
-        claveUsuario: state.password
-      }
+        claveUsuario: state.password,
+      };
       const config: AxiosRequestConfig = {
-        headers: payload
-      }
-      const response = await axiosInstance.get('auth/login', config);
+        headers: payload,
+      };
+      const response = await axiosInstance.get("auth/login", config);
       const session = response.data[0];
-      localStorage.setItem('ntu-session', JSON.stringify(session));
-      
-      
+      localStorage.setItem("ntu-session", JSON.stringify(session));
+
       // Get pages
-      const availablePages = await axiosInstance.get(`paginas/usuario/${session.loginUsuario}`);  
-      localStorage.setItem('ntu-availablePages', JSON.stringify(availablePages.data))
-     
+      const availablePages = await axiosInstance.get(
+        `paginas/usuario/${session.loginUsuario}`
+      );
 
+      localStorage.setItem(
+        "ntu-availablePages",
+        JSON.stringify([
+          ...availablePages.data,
+          {
+            codPpagina: "password",
+            nombrePagina: "changePassword",
+          },    
+        ])
+      );
 
-      const homePage = AvailablePagesMap[availablePages.data[0].nombrePagina]
+      const homePage = AvailablePagesMap[availablePages.data[0].nombrePagina];
       router.push(`pages${homePage}`);
-
     } catch (error) {
-    
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Usuario o clave invalido!",
-        
-      });
+      console.log(error);
+      
     }
-
   };
 
-
   const handleUserInput = (e: ChangeEvent<HTMLInputElement>) => {
-    setState(ps => ({ ...ps, [e.target.name]: e.target.value }))
-  }
+    setState((ps) => ({ ...ps, [e.target.name]: e.target.value }));
+  };
 
   return (
     <Box sx={{ minWidth: 275 }}>
@@ -82,7 +83,7 @@ export default function Login() {
               src={logo}
               alt=""
               style={{
-                width: "60%",
+                width: "47%",
                 height: "0%",
                 maxWidth: "100%",
                 marginLeft: "auto",
@@ -91,14 +92,17 @@ export default function Login() {
               }}
             />
 
-
             <Typography
               component="h6"
               align="center"
               variant="h6"
-              style={{ marginTop: "-20px" }}
+              style={{
+                marginTop: "-10px",
+                fontWeight: "bold",
+                fontSize: "24px",
+              }}
             >
-              Iniciar sesión
+              Administración de Usuarios
             </Typography>
 
             <br />
@@ -110,7 +114,13 @@ export default function Login() {
               spacing={1}
             >
               <Grid item xs={8} md={8} lg={8}>
-                <TextField label="Usuario" value={state.user} name={'user'} onChange={handleUserInput} fullWidth />
+                <TextField
+                  label="Usuario"
+                  value={state.user}
+                  name={"user"}
+                  onChange={handleUserInput}
+                  fullWidth
+                />
               </Grid>
 
               <Grid item xs={8} md={8} lg={8}>
@@ -121,7 +131,7 @@ export default function Login() {
                   <OutlinedInput
                     id="outlined-adornment-password"
                     type={showPassword ? "text" : "password"}
-                    name={'password'}
+                    name={"password"}
                     value={state.password}
                     onChange={handleUserInput}
                     endAdornment={
@@ -153,7 +163,6 @@ export default function Login() {
                 </Button>
               </Grid>
             </Grid>
-
           </CardContent>
         </>
       </Card>

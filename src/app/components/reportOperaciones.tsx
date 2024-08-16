@@ -36,6 +36,7 @@ interface OperacionesTable {
   totalOpActCorreo: number;
   totalOpActEstatus: number;
   totalOpActClave: number;
+  totalReg:number;
 }
 
 export default function ReportOperaciones(props: any) {
@@ -57,6 +58,7 @@ export default function ReportOperaciones(props: any) {
     tipoCliente: undefined,
     nombreUsuario: undefined,
     tipoModificacion: undefined,
+   
   });
 
   const [tipoModificacion, setTipoModificacion] = useState<{
@@ -90,7 +92,7 @@ export default function ReportOperaciones(props: any) {
     error: boolean;
     helperText: string;
   }>({
-    value: "1",
+    value: "3",
     options: [
       {
         id: "1",
@@ -133,7 +135,18 @@ export default function ReportOperaciones(props: any) {
 
   const handleClose = () => {
     setOpen(false);
+
+   setSearchParams({
+    loginUsuario: getSession().loginUsuario,
+    codPagina: 1,
+    tipoCliente: undefined,
+    nombreUsuario: undefined,
+    tipoModificacion: undefined,
+   })
   };
+
+
+
   const getOperacionesReport = async (params?: any) => {
     try {
       const result = await axiosInstance.get(`clientes/reporteOperaciones`, {
@@ -145,6 +158,7 @@ export default function ReportOperaciones(props: any) {
           tipoModificacion: tipoModificacion.value,
           tipoCliente: tipoCliente.value,
           nombreUsuario: search,
+         
         },
       });
 
@@ -250,7 +264,7 @@ export default function ReportOperaciones(props: any) {
                 name="tipoModificacion"
                 onChange={handleTipoModificacionSelect}
               >
-                <MenuItem>Ninguno</MenuItem>
+                
                 {tipoModificacion.options.map((estado) => (
                   <MenuItem key={estado.id} value={estado.id}>
                     <em>{estado.label}</em>
@@ -365,7 +379,7 @@ export default function ReportOperaciones(props: any) {
                   t: "s",
                   s: {
                     fill: { fgColor: { rgb: "071c67)" } },
-                    font: { bold: true, sz: 14 },
+                    font: { bold: true, sz: 14 , color:{rgb:"FFFFFF"}},
                     alignment: { horizontal: "right" },
                   },
                 },
@@ -374,7 +388,7 @@ export default function ReportOperaciones(props: any) {
                   t: "s",
                   s: {
                     fill: { fgColor: { rgb: "071c67)" } },
-                    font: { bold: true, sz: 14 },
+                    font: { bold: true, sz: 14 , color:{rgb:"FFFFFF"}},
                     alignment: { wrapText: true },
                   },
                 },
@@ -403,7 +417,7 @@ export default function ReportOperaciones(props: any) {
                   t: "s",
                   s: {
                     fill: { fgColor: { rgb: "6783e4)" } },
-                    font: { bold: true, sz: 12 },
+                    font: { bold: true, sz: 12, color:{rgb:"FFFFFF"} },
                     alignment: { wrapText: true, horizontal: "center" },
                   },
                 },
@@ -412,7 +426,7 @@ export default function ReportOperaciones(props: any) {
                   t: "s",
                   s: {
                     fill: { fgColor: { rgb: "6783e4" } },
-                    font: { bold: true, sz: 12 },
+                    font: { bold: true, sz: 12, color:{rgb:"FFFFFF"} },
                     alignment: { wrapText: true, horizontal: "center" },
                   },
                 },
@@ -421,7 +435,7 @@ export default function ReportOperaciones(props: any) {
                   t: "s",
                   s: {
                     fill: { fgColor: { rgb: "6783e4" } },
-                    font: { bold: true, sz: 12 },
+                    font: { bold: true, sz: 12 , color:{rgb:"FFFFFF"}},
                     alignment: { wrapText: true, horizontal: "center" },
                   },
                 },
@@ -430,7 +444,7 @@ export default function ReportOperaciones(props: any) {
                   t: "s",
                   s: {
                     fill: { fgColor: { rgb: "6783e4" } },
-                    font: { bold: true, sz: 12 },
+                    font: { bold: true, sz: 12, color:{rgb:"FFFFFF"} },
                     alignment: { wrapText: true, horizontal: "center" },
                   },
                 },
@@ -439,7 +453,7 @@ export default function ReportOperaciones(props: any) {
                   t: "s",
                   s: {
                     fill: { fgColor: { rgb: "6783e4" } },
-                    font: { bold: true, sz: 12 },
+                    font: { bold: true, sz: 12, color:{rgb:"FFFFFF"} },
                     alignment: { wrapText: true, horizontal: "center" },
                   },
                 },
@@ -448,7 +462,7 @@ export default function ReportOperaciones(props: any) {
                   t: "s",
                   s: {
                     fill: { fgColor: { rgb: "6783e4" } },
-                    font: { bold: true, sz: 12 },
+                    font: { bold: true, sz: 12, color:{rgb:"FFFFFF"} },
                     alignment: { wrapText: true, horizontal: "center" },
                   },
                 },
@@ -513,7 +527,7 @@ export default function ReportOperaciones(props: any) {
                     t: "s",
                     s: {
                       fill: { fgColor: { rgb: "6783e4" } },
-                      font: { bold: true, sz: 12 },
+                      font: { bold: true, sz: 12, color:{rgb:"FFFFFF"} },
                       alignment: { wrapText: true, horizontal: "center" },
                     },
                   },
@@ -522,7 +536,7 @@ export default function ReportOperaciones(props: any) {
                     t: "s",
                     s: {
                       fill: { fgColor: { rgb: "6783e4" } },
-                      font: { bold: true, sz: 12 },
+                      font: { bold: true, sz: 12, color:{rgb:"FFFFFF"} },
                       alignment: { wrapText: true, horizontal: "center" },
                     },
                   },
@@ -531,7 +545,7 @@ export default function ReportOperaciones(props: any) {
                     t: "s",
                     s: {
                       fill: { fgColor: { rgb: "6783e4" } },
-                      font: { bold: true, sz: 12 },
+                      font: { bold: true, sz: 12 , color:{rgb:"FFFFFF"}},
                       alignment: { wrapText: true, horizontal: "center" },
                     },
                   },
@@ -540,7 +554,7 @@ export default function ReportOperaciones(props: any) {
                     t: "s",
                     s: {
                       fill: { fgColor: { rgb: "6783e4" } },
-                      font: { bold: true, sz: 12 },
+                      font: { bold: true, sz: 12 , color:{rgb:"FFFFFF"}},
                       alignment: { wrapText: true, horizontal: "center" },
                     },
                   },
@@ -549,7 +563,7 @@ export default function ReportOperaciones(props: any) {
                     t: "s",
                     s: {
                       fill: { fgColor: { rgb: "6783e4" } },
-                      font: { bold: true, sz: 12 },
+                      font: { bold: true, sz: 12, color:{rgb:"FFFFFF"}},
                       alignment: { wrapText: true, horizontal: "center" },
                     },
                   },
@@ -697,7 +711,8 @@ export default function ReportOperaciones(props: any) {
             ]}
             data={operaciones?.data || []}
             pagination={{
-              count: operaciones?.total || 0,
+              
+              count: operaciones?.totalReg || 0,
               page: (operaciones?.page || 1) - 1,
               itemsPerPage: 10,
               onPageChange: (event, page) => {
@@ -705,6 +720,7 @@ export default function ReportOperaciones(props: any) {
                   ...prevState,
                   codPagina: page + 1,
                 }));
+               
               },
             }}
           />

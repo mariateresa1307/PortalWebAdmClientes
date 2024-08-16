@@ -11,7 +11,6 @@ import { getAvailablePagesFromSession } from "@/app/helpers/session";
 import { useRouter, notFound } from 'next/navigation'
 
 
-
 export default function RootLayout({
   children
 }: Readonly<{

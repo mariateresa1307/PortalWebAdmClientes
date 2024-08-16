@@ -131,7 +131,8 @@ export default (props: any) => {
         icon: "success",
       }).then(() => props.onFinish());
     } catch (error) {
-      console.error("Error saving estatus:", error);
+      console.log(error);
+      
     }
   };
 

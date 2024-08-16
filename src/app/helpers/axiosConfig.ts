@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import Swal from "sweetalert2";
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API,
@@ -23,30 +23,42 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => {
+    console.log("request error")
     return Promise.reject(error);
   }
 );
 
+const handleResolvedRequest = () => {
+  requestCount.resolved += 1;
+
+  if(requestCount.resolved === requestCount.sended) {
+
+      const l = window.document.getElementById("loader");
+      if(l) {
+          l.style.display = "none";
+      }
+
+     
+      requestCount.resolved = 0;
+      requestCount.sended = 0;
+  }
+}
+
 axiosInstance.interceptors.response.use(
   (response) => {
-    requestCount.resolved += 1;
 
-    if(requestCount.resolved === requestCount.sended) {
-
-        const l = window.document.getElementById("loader");
-        if(l) {
-            l.style.display = "none";
-        }
-
-       
-        requestCount.resolved = 0;
-        requestCount.sended = 0;
-    }
-
-
+    handleResolvedRequest()
     return response;
   },
   (error) => {
+    console.log("response error", error)
+    handleResolvedRequest()
+
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: error.response?.data.detail || "Internal error",
+    });
     return Promise.reject(error);
   }
 );

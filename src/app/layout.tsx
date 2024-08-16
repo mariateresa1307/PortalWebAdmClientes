@@ -9,7 +9,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { enUS } from 'date-fns/locale';
 
 
-
 const materialTheme = materialCreateTheme({
   palette: {
     primary: { main : "#344a8f"},
