@@ -27,6 +27,7 @@ export default function RootLayout({
 
       
       Object.keys(AvailablePagesMap).forEach(key => {
+        
         if(key === availablePage.nombrePagina && pathname.includes(AvailablePagesMap[key])) {
           userHavePermissions = true
         }

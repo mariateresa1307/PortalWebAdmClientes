@@ -1,14 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import SearchSeccion from "../../../components/searchClients";
-import Grid from "@mui/material/Grid";
-import Fab from "@mui/material/Fab";
-import CustomModalEditEmail from "./editClientEmail";
 import CustomModalEditEstatus from "./editClientStatus";
 import Swal from "sweetalert2";
 import LockIcon from "@mui/icons-material/Lock";
@@ -18,35 +14,22 @@ import Tooltip from "@mui/material/Tooltip";
 import { CustomTable } from "@/app/components/materialTable";
 import { axiosInstance } from "@/app/helpers/axiosConfig";
 import { findAccion, getSession } from "@/app/helpers/session";
-
+import TaskIcon from "@mui/icons-material/Task";
 
 export default function viewClients(props: any) {
-  const [email, setEmail] = useState({
-    active: false,
-    client: {},
-  });
-
   const [estatus, setEstatus] = useState({
     active: false,
     client: {},
   });
 
-  const [permissions, setPermissions ] = useState({
+  const [permissions, setPermissions] = useState({
     resetPassword: false,
-    changeEmail: false, 
-    changeStatus: false
-  })
-
-  const handleClickOpenEmail = (client: string) => {
-    setEmail({ active: true, client });
-  };
-
-  const handleClickOpenStatus = (client: string) => {
-    setEstatus({ active: true, client });
-  };
+    resetEmail: false,
+    changeStatus: false,
+    validateDate: false,
+  });
 
   const onFinish = (): void => {
-    setEmail({ active: false, client: {} });
     setEstatus({ active: false, client: {} });
     props.setSearchParams((prevState: any) => ({
       ...prevState,
@@ -54,6 +37,53 @@ export default function viewClients(props: any) {
       tipoCliente: 3,
       documento: undefined,
     }));
+  };
+
+  const handleResetEmail = (documento: string) => {
+    Swal.fire({
+      title: "Estas seguro?",
+      text: "Deseas restablecer correo Electronico",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ok!",
+    }).then(async (result) => {
+      try {
+        const session = JSON.parse(localStorage.getItem("ntu-session") || "{}");
+        const payload = {loginUsuario: session.loginUsuario};
+
+        if (result.isConfirmed) {
+          const result = await axiosInstance.put(
+            `clientes/resetearcorreo/${documento}`,payload);
+          Swal.fire({
+            title: "Completado",
+            text: "Correo Electronico Restablecido",
+            icon: "success",
+          });
+        }
+      } catch {
+        console.error("Error");
+      }
+    });
+  };
+
+  const handleClickOpenStatus = (client: string) => {
+    setEstatus({ active: true, client });
+  };
+
+  const handleValidateDate = async (documento: string) => {
+    try {
+      await axiosInstance.get(`clientes/validardatos/${documento}`);
+
+      Swal.fire({
+        title: "Completado!",
+        text: "Datos validados correctamente",
+        icon: "success",
+      });
+    } catch {
+      console.error("Error");
+    }
   };
 
   const handleResetPassword = (documento: string) => {
@@ -66,74 +96,67 @@ export default function viewClients(props: any) {
       cancelButtonColor: "#d33",
       confirmButtonText: "Ok!",
     }).then(async (result) => {
-
-
       try {
-        const session = JSON.parse(localStorage.getItem("ntu-session") || "{}");3
+        const session = JSON.parse(localStorage.getItem("ntu-session") || "{}");
         console.log(session, "session");
-     
+
         const payload = {
           loginUsuario: session.loginUsuario,
         };
-       
-       // await axiosInstance.put(`clientes/resetearclave/${documento}`, payload );
-    
-       if (result.isConfirmed) {
-        const result=  await axiosInstance.put(`clientes/resetearclave/${documento}`, payload );
-        console.log(result);
-        
-         Swal.fire({
-           title: "Completado",
-           text: "Contraseña Restablecida",
-           icon: "success",
-         });
-       }
-      }  catch{ console.error("eeror");
+
+        if (result.isConfirmed) {
+          const result = await axiosInstance.put(
+            `clientes/resetearclave/${documento}`,
+            payload
+          );
+          console.log(result);
+
+          Swal.fire({
+            title: "Completado",
+            text: "Contraseña Restablecida",
+            icon: "success",
+          });
+        }
+      } catch {
+        console.error("eeror");
       }
-
-      
-      
-
-
-
-      });
-    };
+    });
+  };
 
   const handleClose = () => {
-    setEmail({
-      active: false,
-      client: {},
-    });
     setEstatus({
       active: false,
       client: {},
     });
   };
 
-  
-
   const checkPermissions = async () => {
-    const result = await axiosInstance.get(`acciones/usuario/${getSession().loginUsuario}/pagina/${2}`);
-    
-    const data: Array<{codAccion: string, nombreAccion: string}> = result.data;
+    const result = await axiosInstance.get(
+      `acciones/usuario/${getSession().loginUsuario}/pagina/${2}`
+    );
 
+    const data: Array<{ codAccion: string; nombreAccion: string }> =
+      result.data;
 
     setPermissions({
-      resetPassword: findAccion('Resetear Clave', data),
-      changeEmail: findAccion('Modificar Correo', data), 
-      changeStatus: findAccion('Modificar Estatus', data), 
-    })
-  }
-
+      resetPassword: findAccion("Resetear Clave", data),
+      resetEmail: findAccion("Modificar Correo", data),
+      changeStatus: findAccion("Modificar Estatus", data),
+      validateDate: findAccion("Validar Datis", data),
+    });
+  };
 
   useEffect(() => {
-    checkPermissions()  
-  }, [])
+    checkPermissions();
+  }, []);
 
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <SearchSeccion setSearchParams={props.setSearchParams} searchParams={props.searchParams} />
+        <SearchSeccion
+          setSearchParams={props.setSearchParams}
+          searchParams={props.searchParams}
+        />
 
         <CustomTable
           columns={[
@@ -154,27 +177,43 @@ export default function viewClients(props: any) {
                     variant="contained"
                     aria-label="Basic button group"
                   >
-                    { permissions.changeEmail && <Tooltip title="Editar Correo" placement="top-end">
-                      <Button onClick={() => handleClickOpenEmail(row)}>
-                        <EmailIcon />
-                      </Button>
-                    </Tooltip> }
+                    {permissions.resetEmail && (
+                      <Tooltip title="Restablecer Correo" placement="top-end">
+                        <Button
+                          onClick={() => handleResetEmail(row.documento)}
+                        >
+                          <EmailIcon />
+                        </Button>
+                      </Tooltip>
+                    )}
 
-                    { permissions.changeStatus && <Tooltip title="Editar Estatus" placement="top-end">
-                      <Button onClick={() => handleClickOpenStatus(row)}>
-                        <ToggleOnIcon />
-                      </Button>
-                    </Tooltip> }
+                    {permissions.changeStatus && (
+                      <Tooltip title="Editar Estatus" placement="top-end">
+                        <Button onClick={() => handleClickOpenStatus(row)}>
+                          <ToggleOnIcon />
+                        </Button>
+                      </Tooltip>
+                    )}
 
-                    { permissions.resetPassword && <Tooltip title="Restablecer contraseña" placement="top-end">
-                      <Button
-                        onClick={() => handleResetPassword(row.documento)}
+                    {permissions.resetPassword && (
+                      <Tooltip
+                        title="Restablecer contraseña"
+                        placement="top-end"
                       >
-                        <LockIcon />
+                        <Button
+                          onClick={() => handleResetPassword(row.documento)}
+                        >
+                          <LockIcon />
+                        </Button>
+                      </Tooltip>
+                    )}
+
+                    <Tooltip title="Restablecer contraseña" placement="top-end">
+                      <Button onClick={() => handleValidateDate(row.documento)}>
+                        <TaskIcon />
                       </Button>
-                    </Tooltip> }
+                    </Tooltip>
                   </ButtonGroup>
-                
                 </>
               ),
               title: "accion",
@@ -201,13 +240,7 @@ export default function viewClients(props: any) {
           }}
         />
       </Paper>
-      <CustomModalEditEmail
-        open={email.active}
-        handleClose={handleClose}
-        onFinish={onFinish}
-        title={"  Editar Clientes"}
-        client={email.client}
-      />
+
       <CustomModalEditEstatus
         open={estatus.active}
         handleClose={handleClose}
