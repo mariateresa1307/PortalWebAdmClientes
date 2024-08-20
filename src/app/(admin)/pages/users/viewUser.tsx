@@ -162,6 +162,15 @@ export default function viewUser() {
           text: "Contraseña Restablecida",
           icon: "success",
         });
+
+        setSearchParams({
+          codPagina: 1,
+          codDepartamento: undefined,
+          codEstatus: undefined,
+          codTipo: undefined,
+          nombreUsuario: undefined,
+        })
+        
       }
     });
   };

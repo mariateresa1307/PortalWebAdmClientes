@@ -63,12 +63,6 @@ export default (props: any) => {
     },
   });
 
-  const [value, setValue] = useState<{
-    value: Date;
-  }>({
-    value: new Date(),
-  });
-
   const [estatus, setEstatusCliente] = useState<{
     value: string;
     options: Array<{ label: string; id: string }>;

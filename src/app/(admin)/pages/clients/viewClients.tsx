@@ -16,6 +16,7 @@ import { axiosInstance } from "@/app/helpers/axiosConfig";
 import { findAccion, getSession } from "@/app/helpers/session";
 import TaskIcon from "@mui/icons-material/Task";
 
+const DEFAULT_TIPO_CLIENT = 3 
 export default function viewClients(props: any) {
   const [estatus, setEstatus] = useState({
     active: false,
@@ -34,7 +35,7 @@ export default function viewClients(props: any) {
     props.setSearchParams((prevState: any) => ({
       ...prevState,
       codPagina: 1,
-      tipoCliente: 3,
+      tipoCliente: DEFAULT_TIPO_CLIENT,
       documento: undefined,
     }));
   };
@@ -51,16 +52,26 @@ export default function viewClients(props: any) {
     }).then(async (result) => {
       try {
         const session = JSON.parse(localStorage.getItem("ntu-session") || "{}");
-        const payload = {loginUsuario: session.loginUsuario};
+        const payload = { loginUsuario: session.loginUsuario };
 
         if (result.isConfirmed) {
           const result = await axiosInstance.put(
-            `clientes/resetearcorreo/${documento}`,payload);
+            `clientes/resetearcorreo/${documento}`,
+            payload
+          );
           Swal.fire({
             title: "Completado",
             text: "Correo electrónico Restablecido",
             icon: "success",
-          });
+          }).then (() =>{
+
+            props.setSearchParams((prevState: any) => ({
+              ...prevState,
+              codPagina: 1,
+              tipoCliente: DEFAULT_TIPO_CLIENT,
+              documento: undefined,
+            }));
+          })
         }
       } catch {
         console.error("Error");
@@ -72,7 +83,7 @@ export default function viewClients(props: any) {
     setEstatus({ active: true, client });
   };
 
-  const handleValidateDate = async (documento: string) => {
+  const handleValidateData = async (documento: string) => {
     try {
       await axiosInstance.get(`clientes/validardatos/${documento}`);
 
@@ -80,7 +91,15 @@ export default function viewClients(props: any) {
         title: "Completado!",
         text: "Datos validados correctamente",
         icon: "success",
-      });
+      }).then (()=> {
+
+        props.setSearchParams((prevState: any) => ({
+          ...prevState,
+          codPagina: 1,
+          tipoCliente: DEFAULT_TIPO_CLIENT,
+          documento: undefined,
+        }));
+      }) 
     } catch {
       console.error("Error");
     }
@@ -109,13 +128,21 @@ export default function viewClients(props: any) {
             `clientes/resetearclave/${documento}`,
             payload
           );
-          console.log(result);
+          
 
           Swal.fire({
             title: "Completado",
             text: "Contraseña Restablecida",
             icon: "success",
-          });
+          }).then (() =>{
+
+            props.setSearchParams((prevState: any) => ({
+              ...prevState,
+              codPagina: 1,
+              tipoCliente: DEFAULT_TIPO_CLIENT,
+              documento: undefined,
+            }));
+          })
         }
       } catch {
         console.error("eeror");
@@ -142,13 +169,15 @@ export default function viewClients(props: any) {
       resetPassword: findAccion("Resetear Clave", data),
       resetEmail: findAccion("Modificar Correo", data),
       changeStatus: findAccion("Modificar Estatus", data),
-      validateDate: findAccion("Validar Datis", data),
+      validateDate: findAccion("Validar Datos", data),
     });
   };
 
   useEffect(() => {
     checkPermissions();
   }, []);
+
+
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -179,9 +208,7 @@ export default function viewClients(props: any) {
                   >
                     {permissions.resetEmail && (
                       <Tooltip title="Restablecer Correo" placement="top-end">
-                        <Button
-                          onClick={() => handleResetEmail(row.documento)}
-                        >
+                        <Button onClick={() => handleResetEmail(row.documento)}>
                           <EmailIcon />
                         </Button>
                       </Tooltip>
@@ -208,11 +235,15 @@ export default function viewClients(props: any) {
                       </Tooltip>
                     )}
 
-                    <Tooltip title="Restablecer contraseña" placement="top-end">
-                      <Button onClick={() => handleValidateDate(row.documento)}>
-                        <TaskIcon />
-                      </Button>
-                    </Tooltip>
+                    {permissions.validateDate && (
+                      <Tooltip title="Validar Datos" placement="top-end">
+                        <Button
+                          onClick={() => handleValidateData(row.documento)}
+                        >
+                          <TaskIcon />
+                        </Button>
+                      </Tooltip>
+                    )}
                   </ButtonGroup>
                 </>
               ),
