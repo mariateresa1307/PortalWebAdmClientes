@@ -42,7 +42,7 @@ export default function viewClients(props: any) {
   const handleResetEmail = (documento: string) => {
     Swal.fire({
       title: "Estas seguro?",
-      text: "Deseas restablecer correo Electronico",
+      text: "Deseas restablecer correo electrónico",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -58,7 +58,7 @@ export default function viewClients(props: any) {
             `clientes/resetearcorreo/${documento}`,payload);
           Swal.fire({
             title: "Completado",
-            text: "Correo Electronico Restablecido",
+            text: "Correo electrónico Restablecido",
             icon: "success",
           });
         }
@@ -162,7 +162,7 @@ export default function viewClients(props: any) {
           columns={[
             { field: "codAbonado", title: "Abonado" },
             { field: "nombre", title: "Nombres" },
-            { field: "correo", title: "Correo Electronico" },
+            { field: "correo", title: "Correo electrónico" },
             { field: "tipoCliente", title: "Tipo Cliente" },
             { field: "documento", title: "Documento" },
             { field: "fechaRegistro", title: "Fecha Registro" },
