@@ -9,7 +9,7 @@ app.use(cors());
 
 
 app.get('/auth/login', (req, res) => {
-    return res.json([{ loginUsuario: 'test' }]);
+    return res.json([{ loginUsuario: 'Administrador' }]);
 });
 
 app.get('/paginas/usuario/:idUsuario', (req, res) => {
@@ -204,12 +204,15 @@ app.get('/usuarios', (req, res) => {
 
 
 app.get('/acciones/usuario/:usuario/pagina/:numeroPagina', (req, res) => {
-    // Array<{codAccion: string, nombreAccion: string}>
+  
     const data = [
         { codAccion: '1', nombreAccion: 'Insertar' },
         { codAccion: '2', nombreAccion: 'Modificar' },
         { codAccion: '3', nombreAccion: 'Eliminar' },
-        { codAccion: '4', nombreAccion: 'Resetear Clave' }
+        { codAccion: '4', nombreAccion: 'Resetear Clave' },
+        { codAccion: '5', nombreAccion: 'Modificar Correo' },
+        { codAccion: '6', nombreAccion: 'Modificar Estatus' },
+        { codAccion: '7', nombreAccion: 'Validar Datos' },
     ];
 
 
@@ -524,143 +527,107 @@ http://localhost:4000/clientes/reporteOperaciones?loginUsuario=test&codPagina=1&
 app.get('/clientes/reporteOperaciones', (req, res) => {
     const data = {
         data: [
-            {
+         
+              {
                 id: 1,
                 codAbonado: 12345,
-                nombre: 'Electrodomésticos S.A.',
-                correo: 'info@electrodomesticos.com',
-                tipoCliente: 'Empresa',
-                documento: 'J-12345678-9',
-                fechaRegistro: '2024-01-15',
-                fechaActivacion: '2024-01-20',
-                status: 'Activo',
-                telefono: 2125551122,
-                
-            },
-            {
+                nombre: 'Ana Bravo',
+                fechaOperacion: '15-01-2024',
+                tipoModificacion: 'modifica',
+                cantOperaciones: 5,
+                tipoCliente: 'finanzas',
+              },
+              {
                 id: 2,
                 codAbonado: 67890,
-                nombre: 'María Rodríguez',
-                correo: 'maria.rodriguez@example.com',
-                tipoCliente: 'Persona Natural',
-                documento: 'V-9876543',
-                fechaRegistro: '2024-02-01',
-                fechaActivacion: '2024-02-05',
-                status: 'Inactivo',
-                telefono: 4141234567,
-                
-            },
-            {
+                nombre: 'Carlos Pérez',
+                fechaOperacion: '20-02-2024',
+                tipoModificacion: 'edita',
+                cantOperaciones: 12,
+                tipoCliente: 'admin',
+              },
+              {
                 id: 3,
-                codAbonado: 13579,
-                nombre: 'Servicios Integrales C.A.',
-                correo: 'servicios@integrales.net',
-                tipoCliente: 'Empresa',
-                documento: 'J-98765432-1',
-                fechaRegistro: '2024-03-10',
-                fechaActivacion: '2024-03-15',
-                status: 'Activo',
-                telefono: 2129998877,
-                
-            },
-            {
-                id: 4,
-                codAbonado: 24680,
-                nombre: 'Pedro Pérez',
-                correo: 'pedro.perez@domain.org',
-                tipoCliente: 'Persona Natural',
-                documento: 'E-1234567',
-                fechaRegistro: '2024-04-01',
-                fechaActivacion: '2024-04-07',
-                status: 'Activo',
-                telefono: 4241122334,
-                
-            },
-            {
-                id: 5,
                 codAbonado: 11223,
-                nombre: 'Inversiones Globales',
-                correo: 'inversiones@globales.com.ve',
-                tipoCliente: 'Empresa',
-                documento: 'J-00112233-4',
-                fechaRegistro: '2024-05-05',
-                fechaActivacion: '2024-05-10',
-                status: 'Inactivo',
-                telefono: 2127776655,
-                
-            },
-            {
-                id: 6,
-                codAbonado: 33445,
-                nombre: 'Luisa Fernández',
-                correo: 'luisa.fernandez@email.com',
-                tipoCliente: 'Persona Natural',
-                documento: 'V-5432109',
-                fechaRegistro: '2024-06-12',
-                fechaActivacion: '2024-06-18',
-                status: 'Activo',
-                telefono: 4169876543,
-                
-            },
-            {
-                id: 7,
-                codAbonado: 55667,
-                nombre: 'Consultores Asociados',
-                correo: 'consultores@asociados.biz',
-                tipoCliente: 'Empresa',
-                documento: 'J-44556677-8',
-                fechaRegistro: '2024-07-01',
-                fechaActivacion: '2024-07-08',
-                status: 'Activo',
-                telefono: 2123334455,
-                
-            },
-            {
-                id: 8,
+                nombre: 'Sofía Gómez',
+                fechaOperacion: '05-03-2024',
+                tipoModificacion: 'modifica',
+                cantOperaciones: 8,
+                tipoCliente: 'tecnologia',
+              },
+              {
+                id: 4,
+                codAbonado: 44556,
+                nombre: 'Javier López',
+                fechaOperacion: '10-03-2024',
+                tipoModificacion: 'edita',
+                cantOperaciones: 3,
+                tipoCliente: 'finanzas',
+              },
+              {
+                id: 5,
                 codAbonado: 77889,
-                nombre: 'Ricardo Gómez',
-                correo: 'ricardo.gomez@provider.net',
-                tipoCliente: 'Persona Natural',
-                documento: 'V-10987654',
-                fechaRegistro: '2024-08-15',
-                fechaActivacion: '2024-08-22',
-                status: 'Activo',
-                telefono: 4128899001,
-                
-            },
-            {
-                id: 9,
+                nombre: 'Isabela Rodríguez',
+                fechaOperacion: '25-03-2024',
+                tipoModificacion: 'modifica',
+                cantOperaciones: 15,
+                tipoCliente: 'admin',
+              },
+              {
+                id: 6,
                 codAbonado: 99001,
-                nombre: 'Soluciones Tecnológicas',
-                correo: 'soluciones@tecnologicas.org',
-                tipoCliente: 'Empresa',
-                documento: 'J-88990011-2',
-                fechaRegistro: '2024-09-01',
-                fechaActivacion: '2024-09-07',
-                status: 'Inactivo',
-                telefono: 2126667788,
-                
-            },
-            {
-                id: 10,
+                nombre: 'Mateo Vargas',
+                fechaOperacion: '01-04-2024',
+                tipoModificacion: 'edita',
+                cantOperaciones: 7,
+                tipoCliente: 'tecnologia',
+              },
+              {
+                id: 7,
                 codAbonado: 22334,
-                nombre: 'Elena Vargas',
-                correo: 'elena.vargas@service.com',
-                tipoCliente: 'Persona Natural',
-                documento: 'V-23456789',
-                fechaRegistro: '2024-10-10',
-                fechaActivacion: '2024-10-15',
-                status: 'Activo',
-                telefono: 4145556677,
-                
-            },
+                nombre: 'Valentina Díaz',
+                fechaOperacion: '12-04-2024',
+                tipoModificacion: 'modifica',
+                cantOperaciones: 9,
+                tipoCliente: 'finanzas',
+              },
+              {
+                id: 8,
+                codAbonado: 55667,
+                nombre: 'Sebastián Ruiz',
+                fechaOperacion: '18-04-2024',
+                tipoModificacion: 'edita',
+                cantOperaciones: 4,
+                tipoCliente: 'admin',
+              },
+              {
+                id: 9,
+                codAbonado: 88990,
+                nombre: 'Lucía Flores',
+                fechaOperacion: '28-04-2024',
+                tipoModificacion: 'modifica',
+                cantOperaciones: 11,
+                tipoCliente: 'tecnologia',
+              },
+              {
+                id: 10,
+                codAbonado: 33445,
+                nombre: 'Gabriel Castro',
+                fechaOperacion: '03-05-2024',
+                tipoModificacion: 'edita',
+                cantOperaciones: 6,
+                tipoCliente: 'finanzas',
+              },
         ],
         page: 1,
         pageCount: 2,
         itemsPerPage: 10,
-        activeUsers: 8,
-        inactiveUsers: 2,
-        totalUsers: 10,
+        total: 8,
+        totalResidencial: 2,
+        totalCorporativo: 10,
+        totalOpActCorreo: 10,
+        totalOpActEstatus: 10,
+        totalOpActClave:15,
     };
 
     return res.json(data)
